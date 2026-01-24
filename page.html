@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosolo TV - La chaîne africaine</title>
+    
+    <!-- CSS -->
+    <style>
+        /* RESET ET VARIABLES */
+        :root {
+            --primary: #e63946;
+            --primary-dark: #d32f2f;
+            --secondary: #1d3557;
+            --secondary-light: #457b9d;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --border-radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .animate-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .animate-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* HEADER */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        
+        header.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInLeft 1s ease;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            animation: fadeInRight 1s ease;
+        }
+        
+        .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        /* BOUTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 35px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-small {
+            padding: 10px 25px;
+            font-size: 1rem;
+        }
+        
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(rgba(29, 53, 87, 0.9), rgba(29, 53, 87, 0.9)), 
+                        url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            padding: 10rem 0 8rem;
+            margin-top: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-title span {
+            color: var(--primary);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeInUp 1s ease 0.6s forwards;
+            opacity: 0;
+        }
+        
+        /* SECTIONS */
+        section {
+            padding: 6rem 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .section-title span {
+            color: var(--primary);
+        }
+        
+        .section-subtitle {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        /* ABOUT SECTION */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+        
+        .about-image {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .about-text h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .features {
+            margin: 2.5rem 0;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+        
+        .feature h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-family: 'Arial Black', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        /* PROGRAMS SECTION */
+        .programs {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .program-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .program-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .program-image {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .program-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .program-card:hover .program-image img {
+            transform: scale(1.1);
+        }
+        
+        .program-category {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+        
+        .program-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .program-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .program-content p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            flex: 1;
+            line-height: 1.7;
+        }
+        
+        .program-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .program-meta i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+        
+        /* TEAM SECTION */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .team-member {
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            border: 5px solid white;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .team-member:hover .member-image img {
+            transform: scale(1.1);
+        }
+        
+        .member-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .member-info p {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        /* CONTACT SECTION */
+        .contact {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            color: white;
+        }
+        
+        .contact .section-title {
+            color: white;
+        }
+        
+        .contact .section-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            animation: fadeInLeft 1s ease;
+        }
+        
+        .info-item i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            background: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .info-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .info-item p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+        
+        .contact-form {
+            animation: fadeInRight 1s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 18px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-col h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .footer-col p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-col ul a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-col ul a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .newsletter {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+        
+        .newsletter input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .newsletter input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .newsletter button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .newsletter button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* BACK TO TOP */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(230, 57, 70, 0.3);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+        }
+        
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.8rem;
+            }
+            
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .programs-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section {
+                padding: 4rem 0;
+            }
+            
+            .section-title {
+                font-size: 2.4rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                padding: 8rem 0 6rem;
+            }
+            
+            .hero-title {
+                font-size: 2.4rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image img {
+                height: 400px;
+            }
+        }
+        
+        /* MOBILE MENU TOGGLE */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-tv"></i> Bosolo<span>TV</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#home" class="active">Accueil</a>
+                    <a href="#about">À propos</a>
+                    <a href="#programs">Programmes</a>
+                    <a href="#team">Équipe</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title animate-on-scroll visible">Bienvenue sur <span>Bosolo TV</span></h1>
+                <p class="hero-subtitle animate-on-scroll">La chaîne qui célèbre la richesse culturelle africaine à travers des programmes innovants, éducatifs et divertissants pour toute la famille.</p>
+                <div class="hero-actions">
+                    <a href="#programs" class="btn animate-on-scroll">
+                        <i class="fas fa-play-circle"></i> Voir les programmes
+                    </a>
+                    <a href="#contact" class="btn btn-outline animate-on-scroll">
+                        <i class="fas fa-envelope"></i> Nous contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">À propos de <span>Bosolo TV</span></h2>
+                <p class="section-subtitle">Notre mission est de connecter la diaspora africaine à ses racines à travers des programmes de qualité.</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-image animate-left">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bosolo TV Studio">
+                </div>
+                
+                <div class="about-text animate-right">
+                    <h3>La chaîne qui unit l'Afrique et sa diaspora</h3>
+                    <p>Fondée en 2010, Bosolo TV s'est imposée comme la référence en matière de télévision africaine éducative et culturelle. Nous diffusons des contenus originaux produits par des talents africains du monde entier.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-globe-africa"></i>
+                            <div>
+                                <h4>Couverture internationale</h4>
+                                <p>Disponible dans 45 pays à travers le monde</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h4>Communauté active</h4>
+                                <p>Plus de 2 millions de téléspectateurs mensuels</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-award"></i>
+                            <div>
+                                <h4>Reconnaissance</h4>
+                                <p>Prix de la meilleure chaîne éducative 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#contact" class="btn">
+                        <i class="fas fa-envelope"></i> Nous contacter
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card animate-on-scroll">
+                    <div class="stat-number" data-count="12">0</div>
+                    <div class="stat-label">Années d'expérience</div>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <div class="stat-number" data-count="150">0</div>
+                    <div class="stat-label">Émissions produites</div>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <div class="stat-number" data-count="45">0</div>
+                    <div class="stat-label">Pays couverts</div>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <div class="stat-number" data-count="2000000">0</div>
+                    <div class="stat-label">Téléspectateurs</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section class="programs" id="programs">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Nos <span>Programmes</span></h2>
+                <p class="section-subtitle">Découvrez nos émissions phares qui célèbrent la culture africaine sous toutes ses formes.</p>
+            </div>
+            
+            <div class="programs-grid">
+                <div class="program-card animate-on-scroll">
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Émission éducative">
+                        <div class="program-category">Éducation</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Savoirs d'Afrique</h3>
+                        <p>Une émission éducative qui explore les connaissances traditionnelles et modernes du continent africain. Chaque épisode présente des experts et des histoires inspirantes.</p>
+                        <div class="program-meta">
+                            <span><i class="fas fa-clock"></i> 45 min</span>
+                            <span><i class="fas fa-calendar"></i> Lundi 20h</span>
+                        </div>
+                        <a href="#" class="btn btn-small">
+                            <i class="fas fa-info-circle"></i> Plus d'infos
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="program-card animate-on-scroll">
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Musique africaine">
+                        <div class="program-category">Musique</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Rythmes du Continent</h3>
+                        <p>Découvrez les talents musicaux émergents et les légendes de la musique africaine. Concerts exclusifs, interviews et découverte des instruments traditionnels.</p>
+                        <div class="program-meta">
+                            <span><i class="fas fa-clock"></i> 60 min</span>
+                            <span><i class="fas fa-calendar"></i> Mercredi 21h</span>
+                        </div>
+                        <a href="#" class="btn btn-small">
+                            <i class="fas fa-info-circle"></i> Plus d'infos
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="program-card animate-on-scroll">
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1518834103328-93d45986dce1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cuisine africaine">
+                        <div class="program-category">Cuisine</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Saveurs Africaines</h3>
+                        <p>Un voyage culinaire à travers les spécialités gastronomiques des différentes régions d'Afrique. Recettes traditionnelles et modernes avec des chefs renommés.</p>
+                        <div class="program-meta">
+                            <span><i class="fas fa-clock"></i> 30 min</span>
+                            <span><i class="fas fa-calendar"></i> Vendredi 19h</span>
+                        </div>
+                        <a href="#" class="btn btn-small">
+                            <i class="fas fa-info-circle"></i> Plus d'infos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="text-align: center;">
+                <a href="#" class="btn">
+                    <i class="fas fa-tv"></i> Voir tous les programmes
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Notre <span>Équipe</span></h2>
+                <p class="section-subtitle">Rencontrez les talents qui font vivre Bosolo TV au quotidien.</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member animate-on-scroll">
+                    <div class="member-image">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Amina Diallo">
+                    </div>
+                    <div class="member-info">
+                        <h3>Amina Diallo</h3>
+                        <p>Présentatrice principale</p>
+                    </div>
+                </div>
+                
+                <div class="team-member animate-on-scroll">
+                    <div class="member-image">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kwame Nkrumah">
+                    </div>
+                    <div class="member-info">
+                        <h3>Kwame Nkrumah</h3>
+                        <p>Producteur exécutif</p>
+                    </div>
+                </div>
+                
+                <div class="team-member animate-on-scroll">
+                    <div class="member-image">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fatoumata Keita">
+                    </div>
+                    <div class="member-info">
+                        <h3>Fatoumata Keita</h3>
+                        <p>Réalisatrice</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Contactez-<span>nous</span></h2>
+                <p class="section-subtitle">Nous sommes à votre écoute pour toute question ou suggestion.</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Adresse</h4>
+                            <p>Tunis, Tunisia</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Téléphone</h4>
+                            <p>+216 55 55 0359</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>contact@bosolo.tv</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Horaires</h4>
+                            <p>Lun - Ven: 9h - 18h</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Votre nom" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Votre email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Sujet" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Votre message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Envoyer le message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>Bosolo TV</h4>
+                    <p>La chaîne qui célèbre la richesse culturelle africaine à travers des programmes innovants et éducatifs pour toute la famille.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Liens rapides</h4>
+                    <ul>
+                        <li><a href="#home"><i class="fas fa-chevron-right"></i> Accueil</a></li>
+                        <li><a href="#about"><i class="fas fa-chevron-right"></i> À propos</a></li>
+                        <li><a href="#programs"><i class="fas fa-chevron-right"></i> Programmes</a></li>
+                        <li><a href="#team"><i class="fas fa-chevron-right"></i> Équipe</a></li>
+                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Programmes</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Savoirs d'Afrique</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Rythmes du Continent</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Saveurs Africaines</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Afrique Révélée</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Journal de l'Afrique</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Newsletter</h4>
+                    <p>Abonnez-vous pour recevoir nos actualités et programmes.</p>
+                    <div class="newsletter">
+                        <input type="email" placeholder="Votre email">
+                        <button type="submit">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bosolo TV. Tous droits réservés.</p>
+                <div class="footer-links">
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Conditions d'utilisation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // ===== MOBILE MENU =====
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+                
+                // Animation des barres du menu hamburger
+                const spans = menuToggle.querySelectorAll('span');
+                if (navLinks.classList.contains('active')) {
+                    spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+                    spans[1].style.opacity = '0';
+                    spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+                } else {
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                }
+            });
+            
+            // Fermer le menu mobile quand on clique sur un lien
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    const spans = menuToggle.querySelectorAll('span');
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                });
+            });
+            
+            // ===== HEADER SCROLL EFFECT =====
+            const header = document.getElementById('header');
+            const backToTop = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', function() {
+                // Header effect
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                // Back to top button
+                if (window.scrollY > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+                
+                // Update active nav link
+                updateActiveNavLink();
+            });
+            
+            // ===== SCROLL ANIMATIONS =====
+            const animateElements = document.querySelectorAll('.animate-on-scroll, .animate-left, .animate-right');
+            
+            function checkScroll() {
+                animateElements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.classList.add('visible');
+                    }
+                });
+            }
+            
+            // Initial check
+            checkScroll();
+            
+            // Check on scroll
+            window.addEventListener('scroll', checkScroll);
+            
+            // ===== ANIMATED COUNTERS =====
+            const counters = document.querySelectorAll('.stat-number');
+            
+            function animateCounter(counter) {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const count = parseInt(counter.innerText);
+                const increment = Math.ceil(target / 100);
+                
+                if (count < target) {
+                    counter.innerText = count + increment;
+                    setTimeout(() => animateCounter(counter), 20);
+                } else {
+                    counter.innerText = target;
+                }
+            }
+            
+            // Observer pour les compteurs
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        if (!counter.classList.contains('animated')) {
+                            counter.classList.add('animated');
+                            animateCounter(counter);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                observer.observe(counter);
+            });
+            
+            // ===== ACTIVE NAV LINK =====
+            function updateActiveNavLink() {
+                const sections = document.querySelectorAll('section');
+                const navLinks = document.querySelectorAll('.nav-links a');
+                
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (window.scrollY >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // ===== SMOOTH SCROLL =====
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // ===== BACK TO TOP =====
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // ===== FORM SUBMISSION =====
+            const contactForm = document.getElementById('contactForm');
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Simuler l'envoi du formulaire
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+                    submitBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        alert('Merci pour votre message! Nous vous répondrons dans les plus brefs délais.');
+                        contactForm.reset();
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 1500);
+                });
+            }
+            
+            // ===== INITIALIZE ANIMATIONS =====
+            // Force l'animation du hero au chargement
+            setTimeout(() => {
+                document.querySelectorAll('.hero-subtitle, .hero-actions').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 300);
+            
+            // Add animation classes to cards
+            setTimeout(() => {
+                document.querySelectorAll('.program-card, .team-member, .stat-card').forEach((el, index) => {
+                    setTimeout(() => {
+                        el.classList.add('animate-on-scroll');
+                    }, index * 100);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>bosolo | tv </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* ======= Blog Section ======= */
+        /* ======= SECTION BLOG HARMONISÉE ======= */
+
+        /* ======= SECTION BLOG HARMONISÉE ======= */
+        /* Blog Section - Style Minimaliste & Élégant */
+        /* Fond principal avec effet de gradient */
+        /* =========================
+   SECTION ACTUA / BLOG
+*/
+        :root {
+            /* Palette moderne */
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #ff5e62;
+            --secondary-light: #ff9966;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gray-light: #e9ecef;
+            --gray-medium: #6c757d;
+            --gray-dark: #343a40;
+            --white: #ffffff;
+
+            /* Espacements */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-xxl: 4rem;
+
+            /* Ombres */
+            --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 12px 26px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.14);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.18);
+
+            /* Bordures */
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 26px;
+            --radius-full: 50px;
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.35s ease;
+            --transition-slow: 0.6s ease;
+        }
+
+        /* =========================
+   SECTION ACTUA / BLOG
+========================= */
+        .actua {
+            background: linear-gradient(135deg, #f7f8fc 0%, #f0f2ff 100%);
+            padding: var(--space-xxl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .actua::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            opacity: 0.12;
+        }
+
+        /* Header */
+        .actua .text-center {
+            margin-bottom: var(--space-xxl);
+            position: relative;
+        }
+
+        .actua h4.text-primary {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: var(--space-sm);
+            display: inline-block;
+            position: relative;
+        }
+
+        .actua h4.text-primary::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 3px;
+            background: var(--secondary-color);
+            border-radius: var(--radius-full);
+        }
+
+        .actua .display-4 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 900;
+            color: var(--dark-color);
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+            margin-top: var(--space-md);
+            background: linear-gradient(135deg, var(--dark-color), #2a2a2a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================
+   CARTES ELEGANTES
+========================= */
+        .blog-item {
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .blog-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .blog-item:hover {
+            transform: translateY(-14px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .blog-item:hover::after {
+            opacity: 1;
+        }
+
+        /* Header of card */
+        .blog-top {
+            padding: var(--space-md) var(--space-md) var(--space-sm);
+        }
+
+        .blog-top h4 {
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            margin: 0 0 var(--space-xs);
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(255, 94, 98, 0.12);
+            border-radius: var(--radius-full);
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            letter-spacing: 0.2px;
+        }
+
+        .blog-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all var(--transition-normal);
+        }
+
+        /* Pour le span de date */
+        .blog-meta span:first-child {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(67, 97, 238, 0.05));
+            color: var(--primary-color);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+
+        /* Pour le span d'auteur */
+        .blog-meta span:last-child {
+            background: linear-gradient(135deg, rgba(255, 94, 98, 0.1), rgba(255, 94, 98, 0.05));
+            color: var(--secondary-color);
+            border: 1px solid rgba(255, 94, 98, 0.2);
+        }
+
+        .blog-meta span::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+
+        .blog-meta span:hover::before {
+            left: 100%;
+        }
+
+        .blog-meta span:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-meta span i {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Image */
+        .blog-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 270px;
+        }
+
+        .blog-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .blog-item:hover .blog-img {
+            transform: scale(1.12);
+        }
+
+        /* Body */
+        .blog-body {
+            padding: var(--space-md);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-body h5 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--dark-color);
+            margin: 0 0 var(--space-sm);
+            line-height: 1.4;
+        }
+
+        .blog-body p {
+            font-size: 0.95rem;
+            color: var(--gray-medium);
+            line-height: 1.7;
+            margin: 0 0 var(--space-lg);
+            flex-grow: 1;
+        }
+
+        /* Button */
+        .blog-body .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            color: var(--white);
+            padding: 12px 32px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            align-self: flex-start;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .blog-body .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+            transition: left var(--transition-normal);
+            z-index: -1;
+        }
+
+        .blog-body .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(67, 97, 238, 0.28);
+        }
+
+        .blog-body .btn:hover::before {
+            left: 0;
+        }
+
+        /* =========================
+   MODAL
+========================= */
+        .modal-content {
+            border-radius: var(--radius-xl);
+            border: none;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--dark-color), #2d2d44);
+            color: var(--white);
+            border-bottom: none;
+            padding: var(--space-md) var(--space-lg);
+        }
+
+        .modal-title {
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .btn-close {
+            filter: invert(1) brightness(2);
+            opacity: 0.8;
+            transition: opacity var(--transition-fast);
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: var(--space-lg);
+        }
+
+        .modal-body img {
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .modal-body p {
+            color: var(--gray-dark);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--gray-light);
+            padding: var(--space-md) var(--space-lg);
+            gap: var(--space-sm);
+        }
+
+        .modal-footer .btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            border: none;
+            padding: 10px 25px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background: var(--gray-medium);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+   Animations (scroll)
+========================= */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .actua .col-md-6 {
+            opacity: 0;
+            animation: fadeInUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .actua .col-md-6:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .actua .col-md-6:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .actua .col-md-6:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .actua .col-md-6:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .blog-item:hover {
+            animation: float 3.2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(-14px);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .blog-img-container {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .actua {
+                padding: var(--space-xl) 0;
+            }
+
+            .blog-img-container {
+                height: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .actua {
+                padding: var(--space-lg) var(--space-md);
+            }
+
+            .actua .text-center {
+                margin-bottom: var(--space-xl);
+            }
+
+            .blog-img-container {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .actua h4.text-primary {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+            }
+
+            .actua .display-4 {
+                font-size: 2rem;
+            }
+
+            .blog-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-xs);
+            }
+
+            .blog-body .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Mode sombre (optionnel) */
+        @media (prefers-color-scheme: dark) {
+            .actua {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            }
+
+            .actua .display-4 {
+                background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .blog-item {
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+            }
+
+            .blog-body h5 {
+                color: #fff;
+            }
+
+            .blog-body p {
+                color: rgba(255, 255, 255, 0.75);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Topbar Start -->
+    <div class="container-fluid topbar px-0 d-none d-lg-block">
+        <div class="container px-0">
+            <div class="row gx-0 align-items-center" style="height: 45px;">
+                <div class="col-lg-8 text-center text-lg-start mb-lg-0">
+                    <div class="d-flex flex-wrap">
+                        <a href="#" class="text-muted me-4"><i
+                                class="fas fa-map-marker-alt text-primary me-2"></i>trouver nous</a>
+                        <a href="#" class="text-muted me-4"><i class="fas fa-phone-alt text-primary me-2"></i>+216 55 55
+                            0359</a>
+                        <a href="#" class="text-muted me-0"><i
+                                class="fas fa-envelope text-primary me-2"></i>bosolo@gmail.com</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center text-lg-end">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <a href="#" class="btn btn-primary btn-square rounded-circle nav-fill me-3"><i
+                                class="fab fa-facebook-f text-white"></i></a>
+                        <a href="#" class="btn btn-primary btn-square rounded-circle nav-fill me-3"><i
+                                class="fab fa-twitter text-white"></i></a>
+                        <a href="#" class="btn btn-primary btn-square rounded-circle nav-fill me-3"><i
+                                class="fab fa-instagram text-white"></i></a>
+                        <a href="#" class="btn btn-primary btn-square rounded-circle nav-fill me-0"><i
+                                class="fab fa-linkedin-in text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar & Hero Start -->
+    <div class="container-fluid sticky-top px-0">
+        <div class="position-absolute bg-dark" style="left: 0; top: 0; width: 100%; height: 100%;">
+        </div>
+        <div class="container px-0">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-white py-3 px-4">
+                <a href="index.html" class="navbar-brand p-0">
+                    <h1 class="text-primary m-0"><i class="fas fa-donate me-3"></i>Bosolo tv</h1>
+                    <!-- <img src="img/logo.png" alt="Logo"> -->
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto py-0">
+                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="about.html" class="nav-item nav-link">About</a>
+                        <a href="service.html" class="nav-item nav-link">Services</a>
+                        <a href="project.html" class="nav-item nav-link">Projects</a>
+                        <div class="nav-item dropdown active">
+                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Pages</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="blog.html" class="dropdown-item active">Our Blog</a>
+                                <a href="team.html" class="dropdown-item">Our Team</a>
+                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                                <a href="faqs.html" class="dropdown-item">FAQs</a>
+                                <a href="404.html" class="dropdown-item">404 Page</a>
+                            </div>
+                        </div>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <div class="d-flex align-items-center flex-nowrap pt-xl-0">
+                        <a href="#"
+                            class="btn btn-primary rounded-pill text-white py-2 px-4 ms-2 flex-wrap flex-sm-shrink-0">Bosolo
+                            tv</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar & Hero End -->
+
+    <!-- Modal Search Start -->
+
+    <!-- Header Start -->
+    <div class="container-fluid bg-breadcrumb">
+        <div class="bg-breadcrumb-single"></div>
+        <div class="container text-center py-5" style="max-width: 900px;">
+            <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Nos Blogs</h4>
+            <ol class="breadcrumb justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active text-primary">Blog</li>
+            </ol>
+        </div>
+    </div>
+    <!-- Header End -->
+
+
+
+    <!-- Actua Start -->
+    <div class="container-fluid actua py-5">
+        <div class="container py-5">
+
+            <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+                <h4 class="text-primary">Nos Blogs</h4>
+                <h1 class="display-4">Découvre nos dernières actualités</h1>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+
+                <!-- Actualité 1 -->
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="blog-item">
+                        <div class="blog-top">
+                            <h4>Investissement</h4>
+                            <div class="blog-meta">
+                                <span>Mar 14, 2024</span>
+                                <span>Mr Israelle Mutombo</span>
+                            </div>
+                        </div>
+
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU9N3pERxUyT0DHtnFT9aS4KTu2xDq2xJ4pA&s"
+                            class="blog-img" alt="Image">
+
+                        <div class="blog-body">
+                            <h5>Investigations</h5>
+                            <p>Analyse rapide sur l'elimination de la leopard de la en RDC en can. <a
+                                    href="https://www.google.com/search?q=bosolo+2026&sca_esv=d866c615fc56355b&rlz=1C1GCEA_enTN1184TN1184&udm=2&biw=1536&bih=730&aic=0&sxsrf=ANbL-n6TyqisVKdRaXJC1OG5MHq1y-r7HA%3A1769286275326&ei=gyp1aczTE6n97_UP9r-wuQw&ved=0ahUKEwiMocn_gKWSAxWp_rsIHfYfLMcQ4dUDCBI&uact=5&oq=bosolo+2026&gs_lp=Egtnd3Mtd2l6LWltZyILYm9zb2xvIDIwMjYyBxAjGMkCGCcyBxAjGMkCGCdIjzZQqghY2SxwA3gAkAEBmAF-oAGjCaoBAzYuNrgBA8gBAPgBAZgCBaACxgLCAgQQABgewgIGEAAYCBgemAMAiAYBkgcDMy4yoAekD7IHAzEuMrgHvwLCBwcwLjIuMi4xyAcdgAgB&sclient=gws-wiz-img#sv=CAMSVhoyKhBlLWlBOXFMeVZkLWJnX3hNMg5pQTlxTHlWZC1iZ194TToOeFNtOUdIdVB3RGZDaU0gBCocCgZtb3NhaWMSEGUtaUE5cUx5VmQtYmdfeE0YADABGAcg8I2DogUwAkoKCAEQAhgCIAIoAg">
+                                    Analyse rapide sur l'elimination de la leopard de la en RDC
+                                </a></p>
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#blogModal" onclick="loadBlog(
+                      'Investissement public en RDC',
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU9N3pERxUyT0DHtnFT9aS4KTu2xDq2xJ4pA&s',
+                      '14 Mars 2024',
+                      'BOSOLO NA POLITIK OFFICIELLE | 07 JANVIER 2026 | AVEC KABULO MWANA'
+                    )">
+                                Lire plus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actualité 2 -->
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="blog-item">
+                        <div class="blog-top">
+                            <h4>Reportage</h4>
+                            <div class="blog-meta">
+                                <span>Mar 14, 2024</span>
+                                <span>Mr Godé Mpoy</span>
+                            </div>
+                        </div>
+
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk-GBqnl19KjzklWCwhnqKEt9J4YYOuVHUng&s"
+                            class="blog-img" alt="Image">
+
+                        <div class="blog-body">
+                            <h5>Interview exclusive</h5>
+                            <p>Un reportage spécial sur la situation actuelle de l'economie <a
+                                    href="https://www.google.com/search?q=bosolo+2026+gode+mpoy&sca_esv=d866c615fc56355b&rlz=1C1GCEA_enTN1184TN1184&udm=2&biw=1536&bih=730&aic=0&sxsrf=ANbL-n6XJbSp0JvPMwkChaerz9l9ZUkNwQ%3A1769286265407&ei=eSp1aavEGOuI9u8Ph-njmQo&ved=0ahUKEwjr5Ov6gKWSAxVrhP0HHYf0OKMQ4dUDCBI&uact=5&oq=bosolo+2026+gode+mpoy&gs_lp=Egtnd3Mtd2l6LWltZyIVYm9zb2xvIDIwMjYgZ29kZSBtcG95SNsaUPwEWOcYcAF4AJABAJgBb6ABrwaqAQM5LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB3iyBwC4BwDCBwDIBwCACAE&sclient=gws-wiz-img#sv=CAMSVhoyKhBlLUVURTRYZkVHdFR4c1ZNMg5FVEU0WGZFR3RUeHNWTToOeHNRdGVUWEd4RTRiTk0gBCocCgZtb3NhaWMSEGUtRVRFNFhmRUd0VHhzVk0YADABGAcg0q21ggUwAkoKCAEQAhgCIAIoAg">
+                                    une analyse extrat avec le professeur Godé mpoy concernant l'economie
+                                </a></p>
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#blogModal" onclick="loadBlog(
+                      'Economie',
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk-GBqnl19KjzklWCwhnqKEt9J4YYOuVHUng&s',
+                      '14 Mars 2024',
+                      'BOSOLO NA POLITIK OFFICIELLE | 06 JANVIER 2026 | AVEC PASTEUR GODE MPOY | Bosolo.'
+                    )">
+                                Lire plus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Actualité 3 -->
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="blog-item">
+                        <div class="blog-top">
+                            <h4>Politique</h4>
+                            <div class="blog-meta">
+                                <span>Mar 14, 2024</span>
+                                <span>Mr Danielle Bumba</span>
+                            </div>
+                        </div>
+
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfKnZOquWbdRYu2_G7zKRw2l7zub7VDyCyyA&s"
+                            class="blog-img" alt="Image">
+
+                        <div class="blog-body">
+                            <h5>Actualités politiques</h5>
+                            <p>Analyse complète sur les événements politiques récents. <a
+                                    href="https://www.google.com/search?q=bosolo+investissement+&sca_esv=d866c615fc56355b&rlz=1C1GCEA_enTN1184TN1184&udm=2&biw=1536&bih=730&aic=0&sxsrf=ANbL-n4CwTUW9DDplUvAVngZHL_7frSOLA%3A1769278942576&ei=3g11acXyIreq9u8PrsfimQ0&ved=0ahUKEwjF2YXX5aSSAxU3lf0HHa6jONMQ4dUDCBI&uact=5&oq=bosolo+investissement+&gs_lp=Egtnd3Mtd2l6LWltZyIWYm9zb2xvIGludmVzdGlzc2VtZW50IEjPPFC1DVjWOnABeACQAQCYAYQBoAGiDKoBBDIwLjG4AQPIAQD4AQGYAgagApwEwgIHECMYyQIYJ8ICBRAAGIAEwgIEEAAYHpgDAIgGAZIHAzUuMaAHtBqyBwM1LjG4B5wEwgcFMS4xLjTIBxiACAE&sclient=gws-wiz-img#sv=CAMSVhoyKhBlLUpHME14V0FxSWFab0pNMg5KRzBNeFdBcUlhWm9KTToOS2JEaGp0WGlOb2NxV00gBCocCgZtb3NhaWMSEGUtSkcwTXhXQXFJYVpvSk0YADABGAcghd7NpAkwAkoKCAEQAhgCIAIoAg">
+                                    analyse complet avec monsieur le gouverneur
+                                </a></p>
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#blogModal" onclick="loadBlog(
+                      'Politique & Société',
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfKnZOquWbdRYu2_G7zKRw2l7zub7VDyCyyA&s',
+                      '14 Mars 2024',
+                      'C\'est péjoratif de penser qu\n il faut être natif de Kinshasa pour être reconnu Kinois.'
+                    )">
+                                Lire plus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Actua End -->
+
+
+    <!-- Actua Modal -->
+    <div class="modal fade" id="blogModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content rounded-4">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="blogTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <img id="blogImage" class="img-fluid rounded mb-3" alt="">
+                    <p class="text-muted mb-2" id="blogDate"></p>
+                    <p id="blogContent"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+                        Fermer
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Footer Start --> <!-- Footer Start -->
+    <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="footer-item d-flex flex-column">
+                        <div class="footer-item">
+                            <h4 class="text-white mb-4">Newsletter</h4>
+                            <p class="mb-3">bosolo Tv est un chaine qu coeur des investigations, qui vous aide à
+                                connaitre les actualités de notre pays
+                                qui aide la population de novelles du pays, qui porte aussi soutient au personnes qui
+                                sont en besoin.
+                            </p>
+                            <div class="position-relative mx-auto rounded-pill">
+                                <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text"
+                                    placeholder="entre votre e-mail">
+                                <button type="button"
+                                    class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">S'abonner</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="footer-item d-flex flex-column">
+                        <h4 class="text-white mb-4">Explore</h4>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Home</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Services</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> A propos de nous</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Projects</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> testimonial</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Our Team</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Contact Us</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="footer-item d-flex flex-column">
+                        <h4 class="text-white mb-4">Contact Info</h4>
+                        <a href=""><i class="fa fa-map-marker-alt me-2"></i> +216 55 55 0359</a>
+                        <a href=""><i class="fas fa-envelope me-2"></i> bosolotv@gmail.com</a>
+                        <a href=""><i class="fas fa-envelope me-2"></i> bosolotv@gmail.com</a>
+                        <a href=""><i class="fas fa-phone me-2"></i> +216 55 55 0359</a>
+                        <a href="" class="mb-3"><i class="fas fa-print me-2"></i> +216 55 55 0359</a>
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-light btn-md-square me-2" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-light btn-md-square me-2" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-light btn-md-square me-2" href=""><i class="fab fa-instagram"></i></a>
+                            <a class="btn btn-light btn-md-square me-0" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="footer-item-post d-flex flex-column">
+                        <h4 class="text-white mb-4">Popular Post</h4>
+                        <div class="d-flex flex-column mb-3">
+                            <p class="text-uppercase text-primary mb-2">Investigations</p>
+                            <a href="#" class="text-body">Nous réalisons les investigations partout dans le Congo</a>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <p class="text-uppercase text-primary mb-2">Aide </p>
+                            <a href="#" class="text-body">Nous aidont les personnes qui ont besoin de nous </a>
+                        </div>
+                        <div class="footer-btn text-start">
+                            <a href="#" class="btn btn-light rounded-pill px-4">Voir nos Post <i
+                                    class="fa fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Copyright Start -->
+    <div class="container-fluid copyright py-4">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-md-0">
+                    <span class="text-body"><a href="#" class="border-bottom text-primary"><i
+                                class="fas fa-copyright text-light me-2"></i>bosolo tv</a>, tout droit Réserver</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end text-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Copyright End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/lightbox/js/lightbox.min.js"></script>
+
+
+    <!-- Template Javascript -->
+    <script src="js/main.js">
+    </script>
+</body>
+
+</html>
