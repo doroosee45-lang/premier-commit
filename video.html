@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Vidéos | Plateforme Web</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Style personnalisé -->
+    <style>
+        :root {
+            --bs-primary: #3f2b7a;
+            --bs-dark: #1d3557;
+            --bs-light: #f8f9fa;
+            --bs-white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        /* Spinner */
+        #spinner {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .5s ease-out, visibility 0s linear .5s;
+            z-index: 99999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #spinner.show {
+            transition: opacity .5s ease-out, visibility 0s linear 0s;
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+        
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-primary) 100%);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .admin-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .admin-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Navigation */
+        .admin-nav {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .admin-nav .nav-link {
+            color: var(--bs-dark);
+            padding: 18px 25px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-nav .nav-link:hover,
+        .admin-nav .nav-link.active {
+            color: var(--bs-primary);
+            background-color: rgba(63, 43, 122, 0.05);
+            border-bottom-color: var(--bs-primary);
+        }
+        
+        /* Cartes */
+        .admin-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .admin-card h3 {
+            color: var(--bs-dark);
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(63, 43, 122, 0.1);
+            position: relative;
+        }
+        
+        .admin-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--bs-primary);
+        }
+        
+        /* Boutons */
+        .btn-admin-primary {
+            background: linear-gradient(135deg, var(--bs-primary) 0%, #1c5a75 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-admin-primary:hover {
+            background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-primary) 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(63, 43, 122, 0.2);
+        }
+        
+        .btn-admin-secondary {
+            background: #f8f9fa;
+            color: var(--bs-dark);
+            border: 1px solid #dee2e6;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-admin-secondary:hover {
+            background: var(--bs-dark);
+            color: white;
+            border-color: var(--bs-dark);
+        }
+        
+        /* Formulaire */
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 0.25rem rgba(63, 43, 122, 0.15);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--bs-dark);
+            margin-bottom: 8px;
+        }
+        
+        /* Vidéos */
+        .video-preview-container {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 15px;
+        }
+        
+        .video-preview-container video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-preview-container:hover .video-overlay {
+            opacity: 1;
+        }
+        
+        .video-overlay i {
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+        }
+        
+        .video-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .video-card .card-body {
+            padding: 20px;
+        }
+        
+        .video-card .card-title {
+            font-weight: 600;
+            color: var(--bs-dark);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .video-card .card-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .video-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bs-primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        /* Tableau */
+        .table-admin {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .table-admin thead {
+            background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-primary) 100%);
+            color: white;
+        }
+        
+        .table-admin th {
+            border: none;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        
+        .table-admin td {
+            padding: 15px 20px;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+        
+        .table-admin tbody tr:hover {
+            background-color: rgba(63, 43, 122, 0.03);
+        }
+        
+        /* Modal */
+        .modal-admin .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        .modal-admin .modal-header {
+            background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-primary) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px 30px;
+            border: none;
+        }
+        
+        .modal-admin .modal-body {
+            padding: 30px;
+        }
+        
+        /* Alerts */
+        .alert-admin {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Statut */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(40, 167, 69, 0.15);
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: rgba(108, 117, 125, 0.15);
+            color: #6c757d;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.15);
+            color: #856404;
+        }
+        
+        /* Footer */
+        .admin-footer {
+            background: var(--bs-dark);
+            color: white;
+            padding: 25px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+            
+            .admin-nav .nav-link {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+            
+            .admin-card {
+                padding: 20px;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Style pour le lecteur vidéo */
+        .video-player-container {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        .video-player-container video {
+            width: 100%;
+            max-height: 500px;
+        }
+        
+        /* Miniatures vidéo */
+        .video-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .video-thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Prévisualisation vidéo */
+        #video-preview video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: none;
+        }
+        
+        /* Progress bar custom */
+        .custom-progress {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #e9ecef;
+        }
+        
+        .custom-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--bs-primary), var(--bs-dark));
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Spinner -->
+    <div id="spinner" class="show">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+    </div>
+    
+    <!-- En-tête -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-video me-3"></i> Administration Vidéos</h1>
+                    <p>Gérez vos vidéos, ajoutez, modifiez et supprimez du contenu multimédia</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-inline-block bg-white text-dark px-4 py-2 rounded-pill">
+                        <i class="fas fa-user-circle me-2"></i> Administrateur
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <div class="container">
+        <nav class="admin-nav">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#add-video" data-tab="add-video">
+                        <i class="fas fa-plus-circle me-2"></i> Ajouter une vidéo
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#manage-videos" data-tab="manage-videos">
+                        <i class="fas fa-film me-2"></i> Gérer les vidéos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#storage" data-tab="storage">
+                        <i class="fas fa-database me-2"></i> Stockage
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- Contenu principal -->
+    <main class="container">
+        <!-- Tableau de bord -->
+        <section id="dashboard-section" class="tab-content active">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="admin-card text-center">
+                        <h3>Vidéos totales</h3>
+                        <div class="display-4 text-primary fw-bold" id="total-videos">0</div>
+                        <p class="text-muted">Vidéos publiées sur le site</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="admin-card text-center">
+                        <h3>Espace utilisé</h3>
+                        <div class="display-4 text-primary fw-bold" id="storage-used">0 MB</div>
+                        <p class="text-muted">Sur 1000 MB disponibles</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="admin-card text-center">
+                        <h3>Vidéos actives</h3>
+                        <div class="display-4 text-primary fw-bold" id="active-videos">0</div>
+                        <p class="text-muted">Vidéos visibles sur le site</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="admin-card text-center">
+                        <h3>Dernière vidéo</h3>
+                        <div class="h4 text-primary fw-bold" id="last-video-date">Aucune</div>
+                        <p class="text-muted">Date d'ajout</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="admin-card">
+                        <h3>Dernières vidéos ajoutées</h3>
+                        <div class="table-responsive">
+                            <table class="table table-admin">
+                                <thead>
+                                    <tr>
+                                        <th>Titre</th>
+                                        <th>Catégorie</th>
+                                        <th>Date</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-videos-table">
+                                    <!-- Rempli par JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="admin-card">
+                        <h3>Actions rapides</h3>
+                        <div class="d-grid gap-3">
+                            <button class="btn btn-admin-primary" data-tab="add-video">
+                                <i class="fas fa-plus-circle me-2"></i> Ajouter une vidéo
+                            </button>
+                            <button class="btn btn-admin-secondary" id="refresh-btn">
+                                <i class="fas fa-sync-alt me-2"></i> Actualiser les données
+                            </button>
+                            <button class="btn btn-admin-secondary" id="export-btn">
+                                <i class="fas fa-file-export me-2"></i> Exporter la liste
+                            </button>
+                            <button class="btn btn-admin-secondary" id="backup-btn">
+                                <i class="fas fa-save me-2"></i> Sauvegarder
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <h3>Guide rapide</h3>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item border-0 px-0 py-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>Formats supportés : MP4, WebM, OGG</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0 py-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>Taille max : 100 MB par vidéo</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0 py-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>Respectez les droits d'auteur</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0 py-2">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <small>Pensez à optimiser vos vidéos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Ajouter une vidéo -->
+        <section id="add-video-section" class="tab-content" style="display: none;">
+            <div class="admin-card">
+                <h3><i class="fas fa-plus-circle me-2"></i> Ajouter une nouvelle vidéo</h3>
+                
+                <div id="form-alert" class="alert-admin" style="display: none;"></div>
+                
+                <form id="video-form" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="video-title" class="form-label">Titre de la vidéo *</label>
+                                <input type="text" class="form-control" id="video-title" placeholder="Ex: Présentation de nos services" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="video-description" class="form-label">Description</label>
+                                <textarea class="form-control" id="video-description" rows="4" placeholder="Décrivez le contenu de la vidéo..."></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="video-category" class="form-label">Catégorie</label>
+                                    <select class="form-select" id="video-category">
+                                        <option value="presentation">Présentation</option>
+                                        <option value="tutorial">Tutoriel</option>
+                                        <option value="testimonial">Témoignage</option>
+                                        <option value="event">Événement</option>
+                                        <option value="other">Autre</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="video-status" class="form-label">Statut</label>
+                                    <select class="form-select" id="video-status">
+                                        <option value="active">Active (visible sur le site)</option>
+                                        <option value="inactive">Inactive (cachée)</option>
+                                        <option value="pending">En attente de validation</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="video-tags" class="form-label">Mots-clés (séparés par des virgules)</label>
+                                <input type="text" class="form-control" id="video-tags" placeholder="Ex: présentation, services, entreprise">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="video-file" class="form-label">Fichier vidéo *</label>
+                                <div class="border rounded p-4 text-center">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted mb-3">Glissez-déposez ou cliquez pour sélectionner</p>
+                                    <input type="file" class="form-control" id="video-file" accept="video/*" required>
+                                    <div class="mt-3">
+                                        <small class="text-muted">Formats acceptés: MP4, WebM, OGG</small><br>
+                                        <small class="text-muted">Taille maximale: 100 MB</small>
+                                    </div>
+                                </div>
+                                <div class="progress mt-3" id="upload-progress" style="display: none; height: 10px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="video-thumbnail" class="form-label">Miniature (optionnel)</label>
+                                <input type="file" class="form-control" id="video-thumbnail" accept="image/*">
+                                <small class="text-muted">Si non fourni, une miniature sera générée automatiquement</small>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms-accepted" required>
+                                <label class="form-check-label" for="terms-accepted">
+                                    J'ai le droit de distribuer cette vidéo et j'accepte les conditions d'utilisation
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end">
+                        <button type="button" class="btn btn-admin-secondary me-2" id="reset-form">Effacer le formulaire</button>
+                        <button type="submit" class="btn btn-admin-primary" id="submit-btn">
+                            <i class="fas fa-upload me-2"></i> Publier la vidéo
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="admin-card mt-4">
+                <h3><i class="fas fa-history me-2"></i> Prévisualisation</h3>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="video-preview-container" id="video-preview">
+                            <video id="preview-video" controls>
+                                Votre navigateur ne supporte pas la lecture de vidéos.
+                            </video>
+                            <div class="video-overlay">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <p class="text-center text-muted py-5 m-0" id="preview-placeholder">
+                                Aperçu de la vidéo apparaîtra ici
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="preview-details">
+                            <p class="text-muted">Les détails de la vidéo apparaîtront ici après sélection du fichier.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gérer les vidéos -->
+        <section id="manage-videos-section" class="tab-content" style="display: none;">
+            <div class="admin-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0"><i class="fas fa-film me-2"></i> Gérer les vidéos</h3>
+                    <div class="d-flex">
+                        <input type="text" class="form-control me-2" id="search-videos" placeholder="Rechercher une vidéo...">
+                        <select class="form-select w-auto" id="filter-category">
+                            <option value="all">Toutes catégories</option>
+                            <option value="presentation">Présentation</option>
+                            <option value="tutorial">Tutoriel</option>
+                            <option value="testimonial">Témoignage</option>
+                            <option value="event">Événement</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-admin">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Titre</th>
+                                <th>Catégorie</th>
+                                <th>Date</th>
+                                <th>Taille</th>
+                                <th>Statut</th>
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="videos-table">
+                            <!-- Rempli par JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted" id="videos-count">Aucune vidéo trouvée</div>
+                    <nav aria-label="Navigation des pages">
+                        <ul class="pagination mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="admin-card h-100">
+                        <h3><i class="fas fa-chart-pie me-2"></i> Répartition par catégorie</h3>
+                        <div class="mt-4" id="category-chart">
+                            <!-- Graphique circulaire -->
+                            <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Graphique de répartition</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="admin-card h-100">
+                        <h3><i class="fas fa-tasks me-2"></i> Actions groupées</h3>
+                        <div class="mt-4">
+                            <div class="d-grid gap-3">
+                                <button class="btn btn-admin-secondary" id="export-all-btn">
+                                    <i class="fas fa-file-export me-2"></i> Exporter toutes les vidéos
+                                </button>
+                                <button class="btn btn-admin-secondary" id="backup-all-btn">
+                                    <i class="fas fa-save me-2"></i> Sauvegarder la base de données
+                                </button>
+                                <button class="btn btn-admin-secondary" id="cleanup-btn">
+                                    <i class="fas fa-broom me-2"></i> Nettoyer les fichiers temporaires
+                                </button>
+                                <button class="btn btn-danger" id="delete-selected-btn" disabled>
+                                    <i class="fas fa-trash-alt me-2"></i> Supprimer les sélectionnées
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stockage -->
+        <section id="storage-section" class="tab-content" style="display: none;">
+            <div class="admin-card">
+                <h3><i class="fas fa-database me-2"></i> Gestion du stockage</h3>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Espace utilisé: <strong id="storage-used-text">0 MB</strong></span>
+                                <span>Disponible: <strong id="storage-available-text">1000 MB</strong></span>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar progress-bar-striped" role="progressbar" id="storage-progress" style="width: 0%; background-color: #3f2b7a;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-admin">
+                                <thead>
+                                    <tr>
+                                        <th>Fichier</th>
+                                        <th>Taille</th>
+                                        <th>Type</th>
+                                        <th>Date d'ajout</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="storage-table">
+                                    <!-- Rempli par JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="admin-card h-100">
+                            <h4><i class="fas fa-info-circle me-2"></i> Informations stockage</h4>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Vidéos:</span>
+                                    <span id="storage-videos">0 MB</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Miniatures:</span>
+                                    <span id="storage-thumbnails">0 MB</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Fichiers temporaires:</span>
+                                    <span id="storage-temp">0 MB</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <strong>Total utilisé:</strong>
+                                    <strong id="storage-total">0 MB</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <strong>Disponible:</strong>
+                                    <strong id="storage-free">1000 MB</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button class="btn btn-admin-primary w-100 mb-3" id="optimize-storage-btn">
+                                    <i class="fas fa-compress-alt me-2"></i> Optimiser l'espace
+                                </button>
+                                <button class="btn btn-admin-secondary w-100" id="clear-cache-btn">
+                                    <i class="fas fa-trash me-2"></i> Vider le cache
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="admin-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-md-start mb-3 mb-md-0">
+                    <p class="mb-0">&copy; 2023 Plateforme Web. Tous droits réservés.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i> 
+                        Système sécurisé d'administration vidéo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal pour visualiser une vidéo -->
+    <div class="modal fade modal-admin" id="videoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalTitle">Visualiser la vidéo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-player-container mb-3">
+                        <video id="modal-video-player" controls>
+                            Votre navigateur ne supporte pas la lecture de vidéos.
+                        </video>
+                    </div>
+                    <div id="videoModalDetails">
+                        <!-- Détails de la vidéo -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-admin-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-admin-primary" id="edit-video-btn">Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmation -->
+    <div class="modal fade modal-admin" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    Êtes-vous sûr de vouloir effectuer cette action ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-admin-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-admin-primary" id="confirmActionBtn">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script principal -->
+    <script>
+        // Simuler le chargement
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('spinner').classList.remove('show');
+            }, 800);
+        });
+        
+        // Gestion des onglets
+        document.querySelectorAll('.admin-nav .nav-link').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Mettre à jour la navigation
+                document.querySelectorAll('.admin-nav .nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Afficher l'onglet correspondant
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                });
+                
+                const targetTab = document.getElementById(`${tabId}-section`);
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+                
+                // Si onglet "Gérer les vidéos", charger les vidéos
+                if (tabId === 'manage-videos') {
+                    loadVideos();
+                }
+                
+                // Si onglet "Stockage", charger les données de stockage
+                if (tabId === 'storage') {
+                    updateStorageInfo();
+                }
+            });
+        });
+        
+        // Stockage des vidéos dans localStorage et IndexedDB
+        const VIDEO_STORAGE_KEY = 'admin_videos_data';
+        const VIDEO_FILES_KEY = 'admin_video_files';
+        
+        // Initialiser IndexedDB pour stocker les fichiers vidéo
+        let db;
+        const DB_NAME = 'VideoAdminDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'videos';
+        
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = function(event) {
+                    console.error('IndexedDB error:', event.target.error);
+                    reject(event.target.error);
+                };
+                
+                request.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                        store.createIndex('title', 'title', { unique: false });
+                    }
+                };
+            });
+        }
+        
+        // Sauvegarder une vidéo dans IndexedDB
+        async function saveVideoToDB(videoData) {
+            if (!db) await initDB();
+            
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.put(videoData);
+                
+                request.onsuccess = function() {
+                    resolve(videoData.id);
+                };
+                
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+        
+        // Récupérer une vidéo depuis IndexedDB
+        async function getVideoFromDB(id) {
+            if (!db) await initDB();
+            
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(id);
+                
+                request.onsuccess = function(event) {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+        
+        // Supprimer une vidéo depuis IndexedDB
+        async function deleteVideoFromDB(id) {
+            if (!db) await initDB();
+            
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                
+                request.onsuccess = function() {
+                    resolve(true);
+                };
+                
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+        
+        // Obtenir toutes les vidéos depuis IndexedDB
+        async function getAllVideosFromDB() {
+            if (!db) await initDB();
+            
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = function(event) {
+                    resolve(event.target.result || []);
+                };
+                
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+        
+        // Convertir un fichier en ArrayBuffer
+        function fileToArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    resolve(event.target.result);
+                };
+                reader.onerror = function(event) {
+                    reject(event.target.error);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        // Convertir ArrayBuffer en URL pour la vidéo
+        function arrayBufferToVideoUrl(arrayBuffer, mimeType) {
+            const blob = new Blob([arrayBuffer], { type: mimeType });
+            return URL.createObjectURL(blob);
+        }
+        
+        // Charger les vidéos depuis le stockage
+        async function loadVideosFromStorage() {
+            try {
+                const storedVideos = await getAllVideosFromDB();
+                return storedVideos;
+            } catch (error) {
+                console.error('Erreur lors du chargement des vidéos:', error);
+                return [];
+            }
+        }
+        
+        // Sauvegarder les vidéos dans le stockage
+        async function saveVideoToStorage(video) {
+            try {
+                await saveVideoToDB(video);
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde de la vidéo:', error);
+                return false;
+            }
+        }
+        
+        // Données initiales de démonstration
+        let videos = [];
+        
+        // Initialiser les données
+        async function initData() {
+            try {
+                await initDB();
+                videos = await loadVideosFromStorage();
+                
+                // Si pas de vidéos, créer des données de démonstration
+                if (videos.length === 0) {
+                    videos = [
+                        {
+                            id: 1,
+                            title: "Présentation de l'entreprise",
+                            description: "Vidéo de présentation de nos services et valeurs",
+                            category: "presentation",
+                            filename: "presentation.mp4",
+                            size: "25.4 MB",
+                            date: "2023-10-15",
+                            status: "active",
+                            tags: ["entreprise", "présentation", "services"],
+                            videoData: null // Les données vidéo réelles seront dans IndexedDB
+                        }
+                    ];
+                    
+                    // Sauvegarder les données de démonstration
+                    for (const video of videos) {
+                        await saveVideoToStorage(video);
+                    }
+                }
+                
+                updateStats();
+                updateRecentVideosTable();
+            } catch (error) {
+                console.error('Erreur lors de l\'initialisation des données:', error);
+            }
+        }
+        
+        // Initialiser les statistiques
+        function updateStats() {
+            document.getElementById('total-videos').textContent = videos.length;
+            document.getElementById('active-videos').textContent = videos.filter(v => v.status === 'active').length;
+            
+            // Calculer la taille totale
+            let totalSize = 0;
+            videos.forEach(video => {
+                const sizeNum = parseFloat(video.size);
+                totalSize += sizeNum;
+            });
+            
+            document.getElementById('storage-used').textContent = totalSize.toFixed(1) + ' MB';
+            
+            // Dernière vidéo
+            if (videos.length > 0) {
+                const lastVideo = videos.reduce((latest, current) => {
+                    return new Date(current.date) > new Date(latest.date) ? current : latest;
+                });
+                document.getElementById('last-video-date').textContent = lastVideo.date;
+            }
+            
+            // Mettre à jour le tableau récent
+            updateRecentVideosTable();
+        }
+        
+        // Mettre à jour le tableau des vidéos récentes
+        function updateRecentVideosTable() {
+            const tbody = document.getElementById('recent-videos-table');
+            tbody.innerHTML = '';
+            
+            // Trier par date (les plus récentes d'abord)
+            const sortedVideos = [...videos].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Afficher les 5 plus récentes
+            sortedVideos.slice(0, 5).forEach(video => {
+                const row = document.createElement('tr');
+                
+                // Statut badge
+                let statusClass = '';
+                let statusText = '';
+                switch(video.status) {
+                    case 'active': statusClass = 'status-active'; statusText = 'Active'; break;
+                    case 'inactive': statusClass = 'status-inactive'; statusText = 'Inactive'; break;
+                    case 'pending': statusClass = 'status-pending'; statusText = 'En attente'; break;
+                }
+                
+                row.innerHTML = `
+                    <td><strong>${video.title}</strong></td>
+                    <td>${video.category.charAt(0).toUpperCase() + video.category.slice(1)}</td>
+                    <td>${video.date}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-admin-secondary me-1" onclick="viewVideo(${video.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-admin-secondary me-1" onclick="editVideo(${video.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteVideo(${video.id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Charger toutes les vidéos
+        async function loadVideos() {
+            const tbody = document.getElementById('videos-table');
+            tbody.innerHTML = '';
+            
+            // Filtrer si nécessaire
+            const searchTerm = document.getElementById('search-videos').value.toLowerCase();
+            const filterCategory = document.getElementById('filter-category').value;
+            
+            let filteredVideos = videos.filter(video => {
+                const matchesSearch = video.title.toLowerCase().includes(searchTerm) || 
+                                     video.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = filterCategory === 'all' || video.category === filterCategory;
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Mettre à jour le compteur
+            document.getElementById('videos-count').textContent = 
+                `${filteredVideos.length} vidéo(s) trouvée(s)`;
+            
+            // Afficher les vidéos
+            filteredVideos.forEach(video => {
+                const row = document.createElement('tr');
+                
+                // Statut badge
+                let statusClass = '';
+                let statusText = '';
+                switch(video.status) {
+                    case 'active': statusClass = 'status-active'; statusText = 'Active'; break;
+                    case 'inactive': statusClass = 'status-inactive'; statusText = 'Inactive'; break;
+                    case 'pending': statusClass = 'status-pending'; statusText = 'En attente'; break;
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input video-checkbox" type="checkbox" value="${video.id}">
+                        </div>
+                    </td>
+                    <td><strong>${video.title}</strong></td>
+                    <td>${video.category.charAt(0).toUpperCase() + video.category.slice(1)}</td>
+                    <td>${video.date}</td>
+                    <td>${video.size}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-admin-secondary me-1" onclick="viewVideo(${video.id})" title="Voir">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-admin-secondary me-1" onclick="editVideo(${video.id})" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteVideo(${video.id})" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Gérer les cases à cocher
+            document.querySelectorAll('.video-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateDeleteButton);
+            });
+        }
+        
+        // Mettre à jour le bouton de suppression groupée
+        function updateDeleteButton() {
+            const checkedBoxes = document.querySelectorAll('.video-checkbox:checked');
+            const deleteBtn = document.getElementById('delete-selected-btn');
+            
+            if (checkedBoxes.length > 0) {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = `Supprimer (${checkedBoxes.length})`;
+            } else {
+                deleteBtn.disabled = true;
+                deleteBtn.textContent = 'Supprimer les sélectionnées';
+            }
+        }
+        
+        // Visualiser une vidéo
+        async function viewVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            
+            document.getElementById('videoModalTitle').textContent = video.title;
+            
+            // Charger la vidéo depuis IndexedDB
+            try {
+                const videoData = await getVideoFromDB(id);
+                if (videoData && videoData.videoData) {
+                    const videoUrl = arrayBufferToVideoUrl(videoData.videoData, 'video/mp4');
+                    const videoPlayer = document.getElementById('modal-video-player');
+                    videoPlayer.src = videoUrl;
+                    videoPlayer.load();
+                } else {
+                    // Pour la démonstration, utiliser une vidéo d'exemple si aucune n'est stockée
+                    const videoPlayer = document.getElementById('modal-video-player');
+                    videoPlayer.src = `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`;
+                    videoPlayer.load();
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement de la vidéo:', error);
+            }
+            
+            // Détails de la vidéo
+            document.getElementById('videoModalDetails').innerHTML = `
+                <h6>Description</h6>
+                <p>${video.description}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Informations</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Catégorie:</strong> ${video.category.charAt(0).toUpperCase() + video.category.slice(1)}</li>
+                            <li><strong>Taille:</strong> ${video.size}</li>
+                            <li><strong>Date:</strong> ${video.date}</li>
+                            <li><strong>Statut:</strong> <span class="status-badge ${video.status === 'active' ? 'status-active' : video.status === 'inactive' ? 'status-inactive' : 'status-pending'}">${video.status === 'active' ? 'Active' : video.status === 'inactive' ? 'Inactive' : 'En attente'}</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Mots-clés</h6>
+                        <div>
+                            ${video.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Configurer le bouton modifier
+            document.getElementById('edit-video-btn').onclick = function() {
+                editVideo(id);
+            };
+            
+            // Afficher la modal
+            const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+            videoModal.show();
+            
+            // Nettoyer l'URL de l'objet blob quand la modal est fermée
+            videoModal._element.addEventListener('hidden.bs.modal', function() {
+                const videoPlayer = document.getElementById('modal-video-player');
+                if (videoPlayer.src && videoPlayer.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(videoPlayer.src);
+                    videoPlayer.src = '';
+                }
+            });
+        }
+        
+        // Modifier une vidéo
+        function editVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            
+            // Remplir le formulaire
+            document.getElementById('video-title').value = video.title;
+            document.getElementById('video-description').value = video.description;
+            document.getElementById('video-category').value = video.category;
+            document.getElementById('video-status').value = video.status;
+            document.getElementById('video-tags').value = video.tags.join(', ');
+            
+            // Passer à l'onglet d'ajout
+            document.querySelector('[data-tab="add-video"]').click();
+            
+            // Changer le texte du bouton
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-2"></i> Mettre à jour';
+            
+            // Stocker l'ID pour la mise à jour
+            document.getElementById('submit-btn').setAttribute('data-edit-id', id);
+            
+            // Afficher un message
+            showAlert('Remplissez le formulaire pour mettre à jour la vidéo', 'info');
+        }
+        
+        // Supprimer une vidéo
+        async function deleteVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            
+            // Afficher la modal de confirmation
+            document.getElementById('confirmModalBody').innerHTML = `
+                <p>Êtes-vous sûr de vouloir supprimer la vidéo <strong>"${video.title}"</strong> ?</p>
+                <p class="text-muted">Cette action est irréversible.</p>
+            `;
+            
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+            
+            // Configurer l'action de confirmation
+            document.getElementById('confirmActionBtn').onclick = async function() {
+                try {
+                    // Supprimer de la base de données
+                    await deleteVideoFromDB(id);
+                    
+                    // Supprimer de la liste locale
+                    videos = videos.filter(v => v.id !== id);
+                    
+                    updateStats();
+                    loadVideos();
+                    showAlert(`Vidéo "${video.title}" supprimée avec succès`, 'success');
+                    confirmModal.hide();
+                } catch (error) {
+                    showAlert('Erreur lors de la suppression de la vidéo', 'danger');
+                    console.error('Erreur suppression:', error);
+                }
+            };
+        }
+        
+        // Mettre à jour les informations de stockage
+        async function updateStorageInfo() {
+            try {
+                // Calculer les tailles
+                let videosSize = 0;
+                let thumbnailsSize = 0;
+                let tempSize = 0;
+                
+                videos.forEach(video => {
+                    const sizeNum = parseFloat(video.size);
+                    videosSize += sizeNum;
+                    thumbnailsSize += sizeNum * 0.05; // Estimation: 5% de la taille de la vidéo
+                });
+                
+                tempSize = 12.5; // Taille fixe pour la démo
+                const totalSize = videosSize + thumbnailsSize + tempSize;
+                
+                // Mettre à jour les textes
+                document.getElementById('storage-videos').textContent = videosSize.toFixed(1) + ' MB';
+                document.getElementById('storage-thumbnails').textContent = thumbnailsSize.toFixed(1) + ' MB';
+                document.getElementById('storage-temp').textContent = tempSize.toFixed(1) + ' MB';
+                document.getElementById('storage-total').textContent = totalSize.toFixed(1) + ' MB';
+                document.getElementById('storage-free').textContent = (1000 - totalSize).toFixed(1) + ' MB';
+                
+                // Mettre à jour la barre de progression
+                const progressPercentage = (totalSize / 1000) * 100;
+                document.getElementById('storage-progress').style.width = `${progressPercentage}%`;
+                
+                // Mettre à jour les textes
+                document.getElementById('storage-used-text').textContent = totalSize.toFixed(1) + ' MB';
+                document.getElementById('storage-available-text').textContent = (1000 - totalSize).toFixed(1) + ' MB';
+                
+                // Mettre à jour le tableau de stockage
+                updateStorageTable();
+            } catch (error) {
+                console.error('Erreur mise à jour stockage:', error);
+            }
+        }
+        
+        // Mettre à jour le tableau de stockage
+        function updateStorageTable() {
+            const tbody = document.getElementById('storage-table');
+            tbody.innerHTML = '';
+            
+            // Ajouter les vidéos
+            videos.forEach(video => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <i class="fas fa-file-video text-primary me-2"></i>
+                        ${video.filename}
+                    </td>
+                    <td>${video.size}</td>
+                    <td>Vidéo</td>
+                    <td>${video.date}</td>
+                    <td>
+                        <button class="btn btn-sm btn-admin-secondary" onclick="downloadFile(${video.id})">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Ajouter d'autres fichiers (démo)
+            const demoFiles = [
+                {name: "thumbnail-1.jpg", size: "1.2 MB", type: "Image", date: "2023-10-15"},
+                {name: "thumbnail-2.jpg", size: "1.4 MB", type: "Image", date: "2023-10-10"},
+                {name: "temp-encode.mp4", size: "8.5 MB", type: "Temporaire", date: "2023-10-18"},
+                {name: "backup.zip", size: "2.4 MB", type: "Sauvegarde", date: "2023-10-01"}
+            ];
+            
+            demoFiles.forEach(file => {
+                const row = document.createElement('tr');
+                let icon = 'fa-file';
+                if (file.type === 'Image') icon = 'fa-file-image';
+                if (file.type === 'Temporaire') icon = 'fa-file-alt';
+                if (file.type === 'Sauvegarde') icon = 'fa-file-archive';
+                
+                row.innerHTML = `
+                    <td>
+                        <i class="fas ${icon} text-secondary me-2"></i>
+                        ${file.name}
+                    </td>
+                    <td>${file.size}</td>
+                    <td>${file.type}</td>
+                    <td>${file.date}</td>
+                    <td>
+                        <button class="btn btn-sm btn-admin-secondary" onclick="downloadFileDemo('${file.name}')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Télécharger un fichier vidéo
+        async function downloadFile(id) {
+            try {
+                const video = videos.find(v => v.id === id);
+                if (!video) return;
+                
+                const videoData = await getVideoFromDB(id);
+                if (videoData && videoData.videoData) {
+                    const blob = new Blob([videoData.videoData], { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = video.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showAlert(`Téléchargement de "${video.filename}" démarré`, 'success');
+                } else {
+                    showAlert('Vidéo non trouvée dans le stockage', 'warning');
+                }
+            } catch (error) {
+                console.error('Erreur téléchargement:', error);
+                showAlert('Erreur lors du téléchargement', 'danger');
+            }
+        }
+        
+        // Télécharger un fichier démo
+        function downloadFileDemo(filename) {
+            showAlert(`Téléchargement de "${filename}" simulé`, 'info');
+        }
+        
+        // Gestion du formulaire d'ajout
+        document.getElementById('video-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validation
+            const title = document.getElementById('video-title').value;
+            const fileInput = document.getElementById('video-file');
+            
+            if (!title.trim()) {
+                showAlert('Veuillez saisir un titre pour la vidéo', 'danger');
+                return;
+            }
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showAlert('Veuillez sélectionner un fichier vidéo', 'danger');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // Vérifier la taille du fichier (max 100MB)
+            if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+                showAlert('Le fichier est trop volumineux (max 100 MB)', 'danger');
+                return;
+            }
+            
+            // Vérifier le type de fichier
+            const validTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+            if (!validTypes.includes(file.type)) {
+                showAlert('Format de fichier non supporté. Utilisez MP4, WebM ou OGG', 'danger');
+                return;
+            }
+            
+            // Simuler l'upload
+            const submitBtn = document.getElementById('submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Publication...';
+            
+            // Afficher la barre de progression
+            const progressBar = document.getElementById('upload-progress');
+            progressBar.style.display = 'block';
+            const progressBarInner = progressBar.querySelector('.progress-bar');
+            
+            try {
+                // Convertir le fichier en ArrayBuffer
+                const videoData = await fileToArrayBuffer(file);
+                
+                // Récupérer les données du formulaire
+                const description = document.getElementById('video-description').value;
+                const category = document.getElementById('video-category').value;
+                const status = document.getElementById('video-status').value;
+                const tags = document.getElementById('video-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                
+                // Calculer la taille
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(1);
+                
+                // Vérifier si c'est une mise à jour
+                const editId = submitBtn.getAttribute('data-edit-id');
+                
+                let newVideo;
+                
+                if (editId) {
+                    // Mettre à jour la vidéo existante
+                    const videoIndex = videos.findIndex(v => v.id === parseInt(editId));
+                    if (videoIndex !== -1) {
+                        newVideo = {
+                            ...videos[videoIndex],
+                            title,
+                            description,
+                            category,
+                            status,
+                            tags,
+                            size: `${sizeInMB} MB`,
+                            date: new Date().toISOString().split('T')[0],
+                            videoData: videoData
+                        };
+                        
+                        videos[videoIndex] = newVideo;
+                        await saveVideoToStorage(newVideo);
+                        showAlert(`Vidéo "${title}" mise à jour avec succès`, 'success');
+                        submitBtn.removeAttribute('data-edit-id');
+                    }
+                } else {
+                    // Ajouter une nouvelle vidéo
+                    newVideo = {
+                        id: videos.length > 0 ? Math.max(...videos.map(v => v.id)) + 1 : 1,
+                        title,
+                        description,
+                        category,
+                        status,
+                        tags,
+                        filename: file.name,
+                        size: `${sizeInMB} MB`,
+                        date: new Date().toISOString().split('T')[0],
+                        videoData: videoData
+                    };
+                    
+                    videos.push(newVideo);
+                    await saveVideoToStorage(newVideo);
+                    showAlert(`Vidéo "${title}" ajoutée avec succès`, 'success');
+                }
+                
+                // Mettre à jour les statistiques
+                updateStats();
+                
+                // Réinitialiser le formulaire
+                document.getElementById('video-form').reset();
+                document.getElementById('preview-details').innerHTML = '<p class="text-muted">Les détails de la vidéo apparaîtront ici après sélection du fichier.</p>';
+                document.getElementById('preview-placeholder').textContent = 'Aperçu de la vidéo apparaîtra ici';
+                document.getElementById('preview-video').style.display = 'none';
+                document.getElementById('preview-video').src = '';
+                
+                // Revenir au tableau de bord
+                setTimeout(() => {
+                    document.querySelector('[data-tab="dashboard"]').click();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Erreur upload:', error);
+                showAlert('Erreur lors de l\'upload de la vidéo', 'danger');
+            } finally {
+                // Masquer la barre de progression
+                progressBar.style.display = 'none';
+                progressBarInner.style.width = '0%';
+                
+                // Réactiver le bouton
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+        
+        // Réinitialiser le formulaire
+        document.getElementById('reset-form').addEventListener('click', function() {
+            document.getElementById('video-form').reset();
+            document.getElementById('preview-details').innerHTML = '<p class="text-muted">Les détails de la vidéo apparaîtront ici après sélection du fichier.</p>';
+            document.getElementById('preview-placeholder').textContent = 'Aperçu de la vidéo apparaîtra ici';
+            document.getElementById('preview-video').style.display = 'none';
+            document.getElementById('preview-video').src = '';
+            document.getElementById('submit-btn').removeAttribute('data-edit-id');
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-upload me-2"></i> Publier la vidéo';
+            showAlert('Formulaire réinitialisé', 'info');
+        });
+        
+        // Prévisualisation de la vidéo
+        document.getElementById('video-file').addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+            
+            // Vérifier le type
+            const validTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+            if (!validTypes.includes(file.type)) {
+                showAlert('Format de fichier non supporté. Utilisez MP4, WebM ou OGG', 'danger');
+                this.value = '';
+                return;
+            }
+            
+            // Afficher les détails
+            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            document.getElementById('preview-details').innerHTML = `
+                <h6>Informations du fichier</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Nom:</strong> ${file.name}</li>
+                    <li><strong>Taille:</strong> ${sizeInMB} MB</li>
+                    <li><strong>Type:</strong> ${file.type}</li>
+                    <li><strong>Dernière modification:</strong> ${new Date(file.lastModified).toLocaleDateString()}</li>
+                </ul>
+            `;
+            
+            // Mettre à jour le placeholder et afficher la vidéo
+            document.getElementById('preview-placeholder').style.display = 'none';
+            const previewVideo = document.getElementById('preview-video');
+            previewVideo.style.display = 'block';
+            previewVideo.src = URL.createObjectURL(file);
+            previewVideo.load();
+            
+            // Nettoyer l'URL quand une nouvelle vidéo est sélectionnée
+            previewVideo.addEventListener('loadeddata', function() {
+                if (this.previousSrc && this.previousSrc.startsWith('blob:')) {
+                    URL.revokeObjectURL(this.previousSrc);
+                }
+                this.previousSrc = this.src;
+            });
+        });
+        
+        // Recherche de vidéos
+        document.getElementById('search-videos').addEventListener('input', function() {
+            loadVideos();
+        });
+        
+        // Filtre par catégorie
+        document.getElementById('filter-category').addEventListener('change', function() {
+            loadVideos();
+        });
+        
+        // Suppression groupée
+        document.getElementById('delete-selected-btn').addEventListener('click', function() {
+            const checkedBoxes = document.querySelectorAll('.video-checkbox:checked');
+            if (checkedBoxes.length === 0) return;
+            
+            // Afficher la modal de confirmation
+            document.getElementById('confirmModalBody').innerHTML = `
+                <p>Êtes-vous sûr de vouloir supprimer ${checkedBoxes.length} vidéo(s) sélectionnée(s) ?</p>
+                <p class="text-muted">Cette action est irréversible.</p>
+            `;
+            
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+            
+            // Configurer l'action de confirmation
+            document.getElementById('confirmActionBtn').onclick = async function() {
+                try {
+                    for (const checkbox of checkedBoxes) {
+                        const videoId = parseInt(checkbox.value);
+                        // Supprimer de la base de données
+                        await deleteVideoFromDB(videoId);
+                        // Supprimer de la liste locale
+                        videos = videos.filter(v => v.id !== videoId);
+                    }
+                    
+                    updateStats();
+                    loadVideos();
+                    showAlert(`${checkedBoxes.length} vidéo(s) supprimée(s) avec succès`, 'success');
+                    confirmModal.hide();
+                } catch (error) {
+                    showAlert('Erreur lors de la suppression des vidéos', 'danger');
+                    console.error('Erreur suppression groupée:', error);
+                }
+            };
+        });
+        
+        // Optimiser l'espace de stockage
+        document.getElementById('optimize-storage-btn').addEventListener('click', function() {
+            showAlert('Optimisation de l\'espace de stockage simulée', 'info');
+        });
+        
+        // Vider le cache
+        document.getElementById('clear-cache-btn').addEventListener('click', function() {
+            showAlert('Cache vidé avec succès', 'success');
+        });
+        
+        // Actualiser les données
+        document.getElementById('refresh-btn').addEventListener('click', async function() {
+            try {
+                videos = await loadVideosFromStorage();
+                updateStats();
+                showAlert('Données actualisées', 'success');
+            } catch (error) {
+                showAlert('Erreur lors de l\'actualisation des données', 'danger');
+            }
+        });
+        
+        // Exporter la liste
+        document.getElementById('export-btn').addEventListener('click', function() {
+            const dataStr = JSON.stringify(videos.map(v => ({
+                id: v.id,
+                title: v.title,
+                description: v.description,
+                category: v.category,
+                status: v.status,
+                filename: v.filename,
+                size: v.size,
+                date: v.date,
+                tags: v.tags
+            })), null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'videos_export.json';
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            showAlert('Liste des vidéos exportée', 'success');
+        });
+        
+        // Sauvegarder
+        document.getElementById('backup-btn').addEventListener('click', function() {
+            showAlert('Sauvegarde simulée', 'info');
+        });
+        
+        // Exporter toutes les vidéos
+        document.getElementById('export-all-btn').addEventListener('click', function() {
+            showAlert('Exportation de toutes les vidéos simulée', 'info');
+        });
+        
+        // Sauvegarder la base de données
+        document.getElementById('backup-all-btn').addEventListener('click', function() {
+            showAlert('Sauvegarde de la base de données simulée', 'info');
+        });
+        
+        // Nettoyer les fichiers temporaires
+        document.getElementById('cleanup-btn').addEventListener('click', function() {
+            showAlert('Nettoyage des fichiers temporaires simulé', 'info');
+        });
+        
+        // Afficher une alerte
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('form-alert');
+            alertDiv.className = `alert-admin alert-${type}`;
+            alertDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${message}</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.parentElement.style.display='none'"></button>
+                </div>
+            `;
+            alertDiv.style.display = 'block';
+            
+            // Masquer automatiquement après 5 secondes
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initData();
+                updateStorageInfo();
+                
+                // Simuler un chargement initial
+                setTimeout(() => {
+                    document.querySelectorAll('.fade-in').forEach(el => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    });
+                }, 300);
+            } catch (error) {
+                console.error('Erreur initialisation:', error);
+                showAlert('Erreur lors de l\'initialisation de l\'application', 'danger');
+            }
+        });
+    </script>
+</body>
+</html>

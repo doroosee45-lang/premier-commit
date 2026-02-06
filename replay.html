@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion Vidéos - REPLAY</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Video.js -->
+  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bs-primary: #2563eb;
+      --bs-dark: #1e293b;
+      --bs-light: #f8fafc;
+      --bs-white: #ffffff;
+    }
+
+    body {
+      font-family: "Roboto", sans-serif;
+      background: #f8f9fa;
+    }
+
+    #spinner {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+      z-index: 99999;
+    }
+
+    #spinner.show {
+      transition: opacity 0.5s ease-out, visibility 0s linear 0s;
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--bs-primary) 0%, #1d4ed8 100%);
+      color: var(--bs-white);
+      padding: 70px 0 50px;
+      margin-bottom: 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      top: -150px;
+      right: -100px;
+    }
+
+    .page-header::after {
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      bottom: -100px;
+      left: -50px;
+    }
+
+    .page-header h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-header .breadcrumb {
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-header .breadcrumb-item a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+    }
+
+    .page-header .breadcrumb-item.active {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .box {
+      background: var(--bs-white);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+    }
+
+    .videos-section h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--bs-dark);
+      margin-bottom: 25px;
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    .videos-section h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: var(--bs-primary);
+      border-radius: 2px;
+    }
+
+    .video-card {
+      background: var(--bs-white);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .video-thumbnail {
+      position: relative;
+      height: 190px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: transform 0.5s ease;
+    }
+
+    .video-card:hover .video-thumbnail img {
+      transform: scale(1.08);
+    }
+
+    .video-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 62px;
+      height: 62px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bs-primary);
+      font-size: 1.6rem;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    .video-card:hover .video-play-btn {
+      background: var(--bs-primary);
+      color: var(--bs-white);
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+
+    .video-info {
+      padding: 18px 18px 16px;
+    }
+
+    .video-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--bs-dark);
+      margin-bottom: 5px;
+      line-height: 1.35;
+    }
+
+    .video-meta {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .video-meta i {
+      margin-right: 6px;
+      color: var(--bs-primary);
+    }
+
+    .video-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-action {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+    }
+
+    .btn-like {
+      background: rgba(236, 72, 153, 0.1);
+      color: #ec4899;
+      border-color: rgba(236, 72, 153, 0.25);
+    }
+    .btn-like:hover {
+      background: #ec4899;
+      color: #fff;
+    }
+
+    .btn-share {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.25);
+    }
+    .btn-share:hover {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .btn-sub {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--bs-primary);
+      border-color: rgba(37, 99, 235, 0.25);
+    }
+    .btn-sub:hover {
+      background: var(--bs-primary);
+      color: #fff;
+    }
+
+    .btn-view {
+      background: rgba(99, 102, 241, 0.1);
+      color: #6366f1;
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .btn-view:hover {
+      background: #6366f1;
+      color: #fff;
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    .btn-delete:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .badge-mini {
+      font-size: 0.78rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .alert-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      max-width: 420px;
+    }
+
+    .alert {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .video-modal .modal-content {
+      border-radius: 18px;
+      overflow: hidden;
+      border: none;
+    }
+
+    .video-modal .modal-header {
+      background: var(--bs-dark);
+      color: var(--bs-white);
+      border-bottom: none;
+      padding: 16px 22px;
+    }
+
+    .video-modal .modal-body {
+      padding: 0;
+      background: #000;
+    }
+
+    .video-js {
+      width: 100%;
+      height: 70vh;
+    }
+
+    .video-js .vjs-big-play-button {
+      background-color: var(--bs-primary);
+      border-color: var(--bs-primary);
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      line-height: 78px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Spinner -->
+  <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Alert Container -->
+  <div class="alert-container"></div>
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h1>Gestion des Vidéos REPLAY</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+              <li class="breadcrumb-item">
+                <a href="#"><i class="fas fa-home me-2"></i>Accueil</a>
+              </li>
+              <li class="breadcrumb-item"><a href="#">Administration</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Gestion Vidéos</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- FORMULAIRE AJOUT -->
+    <section class="box">
+      <div class="row g-3 align-items-end">
+        <div class="col-12">
+          <h4 class="fw-bold mb-2">
+            <i class="fas fa-plus-circle text-primary me-2"></i>
+            Ajouter une vidéo (Formulaire)
+          </h4>
+          <p class="text-muted mb-3">Remplis le formulaire puis clique sur <b>Ajouter</b>.</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Titre</label>
+          <input type="text" id="videoTitle" class="form-control" placeholder="Ex: Ma vidéo REPLAY" />
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label fw-semibold">Description</label>
+          <input type="text" id="videoDesc" class="form-control" placeholder="Ex: Vidéo du dimanche" />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fichier vidéo</label>
+          <input type="file" id="videoFile" class="form-control" accept="video/*" />
+        </div>
+
+        <div class="col-12 d-flex gap-2 flex-wrap mt-2">
+          <button class="btn btn-primary" id="btnAddVideo">
+            <i class="fas fa-upload me-2"></i>Ajouter
+          </button>
+
+          <button class="btn btn-outline-primary" id="addTestVideo">
+            <i class="fas fa-video me-2"></i>Ajouter une vidéo de test
+          </button>
+
+          <button class="btn btn-outline-danger ms-auto" id="clearAll">
+            <i class="fas fa-trash me-2"></i>Tout supprimer
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="box">
+      <div class="row text-center g-3">
+        <div class="col-md-3 col-6">
+          <div class="fw-bold fs-4" id="totalVideos">0</div>
+          <div class="text-muted">Vidéos</div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="fw-bold fs-4" id="totalViews">0</div>
+          <div class="text-muted">Vues</div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="fw-bold fs-4" id="totalLikes">0</div>
+          <div class="text-muted">Likes</div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="fw-bold fs-4" id="totalSubs">0</div>
+          <div class="text-muted">Abonnements</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEOS -->
+    <section class="videos-section">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <h2 class="m-0"><i class="fas fa-play-circle me-3"></i>Vidéos disponibles</h2>
+
+        <div class="d-flex gap-2">
+          <input id="searchInput" class="form-control" style="max-width:260px" placeholder="Rechercher..." />
+          <select id="sortSelect" class="form-select" style="max-width:220px">
+            <option value="new">Plus récentes</option>
+            <option value="views">Plus vues</option>
+            <option value="likes">Plus aimées</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" id="videosGrid"></div>
+    </section>
+  </main>
+
+  <!-- Video Modal -->
+  <div class="modal fade video-modal" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="videoModalTitle">Visionner la vidéo</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <video id="modalVideoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto">
+            <p class="vjs-no-js">Active JavaScript pour lire la vidéo.</p>
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmer la suppression</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir supprimer cette vidéo ?</p>
+          <p class="text-muted small" id="deleteVideoName"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+
+  <script>
+    class AlertManager {
+      static show(message, type = "info", duration = 4000) {
+        const container = document.querySelector(".alert-container");
+        const alertId = "alert-" + Date.now();
+
+        const alertEl = document.createElement("div");
+        alertEl.className = `alert alert-${type} alert-dismissible fade show`;
+        alertEl.id = alertId;
+
+        alertEl.innerHTML = `
+          <i class="fas ${this.getIcon(type)} me-2"></i>
+          ${message}
+          <button type="button" class="btn-close" onclick="document.getElementById('${alertId}').remove()"></button>
+        `;
+
+        container.appendChild(alertEl);
+
+        if (duration > 0) {
+          setTimeout(() => {
+            const el = document.getElementById(alertId);
+            if (el) el.remove();
+          }, duration);
+        }
+      }
+
+      static getIcon(type) {
+        const icons = {
+          success: "fa-check-circle",
+          danger: "fa-exclamation-circle",
+          warning: "fa-exclamation-triangle",
+          info: "fa-info-circle",
+        };
+        return icons[type] || "fa-info-circle";
+      }
+    }
+
+    const TEST_VIDEOS = [
+      {
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+        title: "For Bigger Joyrides",
+        description: "Vidéo de démonstration",
+        thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        title: "Elephants Dream",
+        description: "Animation de démonstration",
+        thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=800&q=80",
+      },
+    ];
+
+    class VideoManager {
+      constructor() {
+        this.videosKey = "replay_videos_v2";
+        this.currentVideoPlayer = null;
+        this.init();
+      }
+
+      init() {
+        if (!localStorage.getItem(this.videosKey)) {
+          localStorage.setItem(this.videosKey, JSON.stringify([]));
+        }
+        this.loadVideos();
+        this.updateStats();
+      }
+
+      getVideos() {
+        return JSON.parse(localStorage.getItem(this.videosKey)) || [];
+      }
+
+      saveVideos(videos) {
+        localStorage.setItem(this.videosKey, JSON.stringify(videos));
+        this.loadVideos();
+        this.updateStats();
+      }
+
+      formatDate(date = new Date()) {
+        return date.toISOString().split("T")[0];
+      }
+
+      bytesToMB(bytes) {
+        return Math.max(1, Math.round(bytes / 1024 / 1024)) + " MB";
+      }
+
+      addVideo(videoData) {
+        const videos = this.getVideos();
+        const newId = videos.length ? Math.max(...videos.map((v) => v.id)) + 1 : 1;
+
+        const newVideo = {
+          id: newId,
+          title: videoData.title || `Nouvelle vidéo ${newId}`,
+          description: videoData.description || "Description à définir",
+          url: videoData.url,
+          thumbnail: videoData.thumbnail || "https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=800&q=80",
+          uploadDate: this.formatDate(new Date()),
+          views: 0,
+          likes: 0,
+          subscribed: false,
+          size: videoData.size || "—",
+          source: videoData.source || "test",
+        };
+
+        videos.unshift(newVideo);
+        this.saveVideos(videos);
+        AlertManager.show(`Vidéo "${newVideo.title}" ajoutée ✅`, "success");
+      }
+
+      addTestVideo() {
+        const random = TEST_VIDEOS[Math.floor(Math.random() * TEST_VIDEOS.length)];
+        this.addVideo({
+          title: random.title,
+          description: random.description,
+          url: random.url,
+          thumbnail: random.thumbnail,
+          size: "Test",
+          source: "test",
+        });
+      }
+
+      confirmDelete(id) {
+        const video = this.getVideos().find((v) => v.id === id);
+        if (!video) return;
+
+        document.getElementById("deleteVideoName").textContent = video.title;
+
+        document.getElementById("confirmDeleteBtn").onclick = () => {
+          this.deleteVideo(id);
+          bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+        };
+
+        new bootstrap.Modal(document.getElementById("deleteModal")).show();
+      }
+
+      deleteVideo(id) {
+        let videos = this.getVideos();
+        const videoToDelete = videos.find((v) => v.id === id);
+        videos = videos.filter((v) => v.id !== id);
+        this.saveVideos(videos);
+        AlertManager.show(`Vidéo "${videoToDelete?.title || ""}" supprimée 🗑️`, "info");
+      }
+
+      likeVideo(id) {
+        const videos = this.getVideos();
+        const v = videos.find((x) => x.id === id);
+        if (!v) return;
+
+        v.likes = (v.likes || 0) + 1;
+        this.saveVideos(videos);
+        AlertManager.show(`Tu as aimé "${v.title}" ❤️`, "success", 2000);
+      }
+
+      toggleSubscribe(id) {
+        const videos = this.getVideos();
+        const v = videos.find((x) => x.id === id);
+        if (!v) return;
+
+        v.subscribed = !v.subscribed;
+        this.saveVideos(videos);
+
+        AlertManager.show(
+          v.subscribed ? `Abonné à "${v.title}" 🔔` : `Désabonné de "${v.title}"`,
+          "info",
+          2500
+        );
+      }
+
+      shareVideo(id) {
+        const video = this.getVideos().find((v) => v.id === id);
+        if (!video) return;
+
+        const text = `Regarde cette vidéo : ${video.title}`;
+        if (navigator.share) {
+          navigator.share({ title: video.title, text }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(text);
+          AlertManager.show("Lien copié (partage) ✅", "success");
+        }
+      }
+
+      updateStats() {
+        const videos = this.getVideos();
+        document.getElementById("totalVideos").textContent = videos.length;
+
+        const totalViews = videos.reduce((sum, v) => sum + (v.views || 0), 0);
+        document.getElementById("totalViews").textContent = totalViews;
+
+        const totalLikes = videos.reduce((sum, v) => sum + (v.likes || 0), 0);
+        document.getElementById("totalLikes").textContent = totalLikes;
+
+        const totalSubs = videos.reduce((sum, v) => sum + (v.subscribed ? 1 : 0), 0);
+        document.getElementById("totalSubs").textContent = totalSubs;
+      }
+
+      playVideo(id) {
+        const videos = this.getVideos();
+        const video = videos.find((v) => v.id === id);
+        if (!video) return AlertManager.show("Vidéo non trouvée", "danger");
+
+        video.views++;
+        this.saveVideos(videos);
+
+        document.getElementById("videoModalTitle").textContent = video.title;
+
+        if (this.currentVideoPlayer) {
+          this.currentVideoPlayer.dispose();
+          this.currentVideoPlayer = null;
+        }
+
+        // Si c'est un fichier local (blob:) => type video/mp4 OK pour la plupart
+        this.currentVideoPlayer = videojs("modalVideoPlayer", {
+          controls: true,
+          autoplay: true,
+          preload: "auto",
+          sources: [{ src: video.url, type: "video/mp4" }],
+          poster: video.thumbnail,
+        });
+
+        const modal = new bootstrap.Modal(document.getElementById("videoModal"));
+        modal.show();
+
+        document.getElementById("videoModal").addEventListener(
+          "hidden.bs.modal",
+          () => {
+            if (this.currentVideoPlayer) this.currentVideoPlayer.pause();
+          },
+          { once: true }
+        );
+      }
+
+      renderVideos(videos) {
+        const grid = document.getElementById("videosGrid");
+        grid.innerHTML = "";
+
+        if (videos.length === 0) {
+          grid.innerHTML = `
+            <div class="col-12 text-center py-5">
+              <i class="fas fa-video-slash fa-3x text-muted mb-3"></i>
+              <h4 class="text-muted">Aucune vidéo trouvée</h4>
+              <p class="text-muted">Ajoute une vidéo pour commencer.</p>
+            </div>
+          `;
+          return;
+        }
+
+        videos.forEach((video) => {
+          const col = document.createElement("div");
+          col.className = "col-lg-3 col-md-4 col-sm-6 mb-4";
+
+          col.innerHTML = `
+            <div class="video-card">
+              <div class="video-thumbnail">
+                <img src="${video.thumbnail}" alt="${video.title}">
+                <div class="video-play-btn" onclick="videoManager.playVideo(${video.id})">
+                  <i class="fas fa-play"></i>
+                </div>
+              </div>
+
+              <div class="video-info">
+                <div class="d-flex align-items-start justify-content-between gap-2">
+                  <h5 class="video-title">${video.title}</h5>
+                  <span class="badge bg-light text-dark badge-mini">
+                    <i class="fas fa-eye me-1"></i>${video.views}
+                  </span>
+                </div>
+
+                <p class="text-muted small mb-2">${video.description}</p>
+
+                <div class="video-meta">
+                  <div><i class="fas fa-calendar"></i> ${video.uploadDate}</div>
+                  <div><i class="fas fa-heart"></i> ${video.likes} likes</div>
+                </div>
+
+                <div class="video-actions">
+                  <button class="btn btn-action btn-like" onclick="videoManager.likeVideo(${video.id})">
+                    <i class="fas fa-heart"></i> J'aime
+                  </button>
+
+                  <button class="btn btn-action btn-share" onclick="videoManager.shareVideo(${video.id})">
+                    <i class="fas fa-share"></i> Partager
+                  </button>
+
+                  <button class="btn btn-action btn-sub" onclick="videoManager.toggleSubscribe(${video.id})">
+                    <i class="fas fa-bell"></i> ${video.subscribed ? "Abonné" : "S'abonner"}
+                  </button>
+
+                  <button class="btn btn-action btn-view" onclick="videoManager.playVideo(${video.id})">
+                    <i class="fas fa-play"></i> Lire
+                  </button>
+
+                  <button class="btn btn-action btn-delete" onclick="videoManager.confirmDelete(${video.id})">
+                    <i class="fas fa-trash"></i> Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          grid.appendChild(col);
+        });
+      }
+
+      loadVideos() {
+        const search = (document.getElementById("searchInput")?.value || "").toLowerCase();
+        const sort = document.getElementById("sortSelect")?.value || "new";
+
+        let videos = this.getVideos();
+
+        if (search) {
+          videos = videos.filter((v) =>
+            (v.title || "").toLowerCase().includes(search) ||
+            (v.description || "").toLowerCase().includes(search)
+          );
+        }
+
+        if (sort === "views") {
+          videos.sort((a, b) => (b.views || 0) - (a.views || 0));
+        } else if (sort === "likes") {
+          videos.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        } // "new" => déjà par ajout (unshift)
+
+        this.renderVideos(videos);
+      }
+
+      clearAll() {
+        localStorage.setItem(this.videosKey, JSON.stringify([]));
+        this.loadVideos();
+        this.updateStats();
+        AlertManager.show("Toutes les vidéos ont été supprimées ✅", "info");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const spinner = document.getElementById("spinner");
+        spinner.classList.remove("show");
+        setTimeout(() => (spinner.style.display = "none"), 500);
+      }, 700);
+
+      window.videoManager = new VideoManager();
+
+      // Recherche + tri
+      document.getElementById("searchInput").addEventListener("input", () => videoManager.loadVideos());
+      document.getElementById("sortSelect").addEventListener("change", () => videoManager.loadVideos());
+
+      // Bouton vidéo test
+      document.getElementById("addTestVideo").addEventListener("click", () => {
+        videoManager.addTestVideo();
+      });
+
+      // Supprimer tout
+      document.getElementById("clearAll").addEventListener("click", () => {
+        if (confirm("Tout supprimer ?")) videoManager.clearAll();
+      });
+
+      // Ajouter vidéo depuis formulaire
+      document.getElementById("btnAddVideo").addEventListener("click", () => {
+        const title = document.getElementById("videoTitle").value.trim();
+        const desc = document.getElementById("videoDesc").value.trim();
+        const file = document.getElementById("videoFile").files[0];
+
+        if (!file) {
+          return AlertManager.show("Choisis un fichier vidéo d'abord ❌", "warning");
+        }
+
+        // URL temporaire pour lire le fichier local
+        const videoURL = URL.createObjectURL(file);
+
+        videoManager.addVideo({
+          title: title || file.name.replace(/\.[^/.]+$/, ""),
+          description: desc || "Vidéo ajoutée depuis le formulaire",
+          url: videoURL,
+          thumbnail: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=800&q=80",
+          size: file.size ? Math.round(file.size / 1024 / 1024) + " MB" : "—",
+          source: "local",
+        });
+
+        // reset form
+        document.getElementById("videoTitle").value = "";
+        document.getElementById("videoDesc").value = "";
+        document.getElementById("videoFile").value = "";
+
+        AlertManager.show("Vidéo ajoutée et prête à lire ✅", "success");
+      });
+
+      // Ajouter une vidéo test automatiquement si vide
+      setTimeout(() => {
+        if (videoManager.getVideos().length === 0) {
+          videoManager.addTestVideo();
+          AlertManager.show('Une vidéo de démonstration a été ajoutée. Clique sur "Lire".', "info", 6000);
+        }
+      }, 900);
+    });
+  </script>
+</body>
+</html>

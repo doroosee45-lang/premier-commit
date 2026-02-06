@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendez-vous TV - BOSOLO TV</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/compte.css">
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="message-container" id="messageContainer"></div>
+
+    <div class="appointment-container">
+        <!-- Carte principale -->
+        <div class="main-card">
+            <!-- En-tête -->
+            <div class="header-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    BOSOLO TV
+                </div>
+                <h1>Prenez Rendez-vous</h1>
+                <p>Planifiez votre émission ou consultation avec nos experts TV</p>
+            </div>
+
+            <!-- Étapes -->
+            <div class="steps-indicator">
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Date</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Horaire</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Paiement</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Confirmation</div>
+                </div>
+            </div>
+
+            <!-- Contenu des formulaires -->
+            <div class="form-content">
+                <!-- Étape 1: Date -->
+                <div class="form-section active" id="step1Content">
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Sélectionnez votre rendez-vous
+                    </h3>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="appointmentType">
+                                    <option value="">Sélectionnez un type</option>
+                                    <option value="consultation">Consultation production</option>
+                                    <option value="interview">Interview TV</option>
+                                    <option value="promotion">Promotion d'émission</option>
+                                    <option value="technical">Support technique</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                                <label for="appointmentType">
+                                    <i class="fas fa-microphone me-2"></i>
+                                    Type de rendez-vous
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="duration">
+                                    <option value="30">30 minutes</option>
+                                    <option value="60" selected>1 heure</option>
+                                    <option value="90">1 heure 30</option>
+                                    <option value="120">2 heures</option>
+                                </select>
+                                <label for="duration">
+                                    <i class="fas fa-clock me-2"></i>
+                                    Durée estimée
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-calendar-day me-2"></i>
+                            Choisissez une date
+                        </h5>
+                        <div class="options-grid dates-grid" id="datesGrid"></div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <div></div>
+                        <button class="btn btn-primary" onclick="nextStep()">
+                            Suivant <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Étape 2: Horaire -->
+                <div class="form-section" id="step2Content">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-circle"></i>
+                        Vos informations
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="firstName" placeholder="Prénom">
+                                <label for="firstName">Prénom</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastName" placeholder="Nom">
+                                <label for="lastName">Nom</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" placeholder="Email">
+                                <label for="email">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    Email
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="phone" placeholder="Téléphone">
+                                <label for="phone">
+                                    <i class="fas fa-phone me-2"></i>
+                                    Téléphone
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-clock me-2"></i>
+                            Choisissez un horaire
+                        </h5>
+                        <div class="options-grid times-grid" id="timesGrid"></div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-outline-primary" onclick="prevStep()">
+                            <i class="fas fa-arrow-left me-2"></i> Retour
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()">
+                            Suivant <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Étape 3: Paiement -->
+                <div class="form-section" id="step3Content">
+                    <h3 class="section-title">
+                        <i class="fas fa-credit-card"></i>
+                        Paiement sécurisé
+                    </h3>
+
+                    <div class="options-grid payment-grid mb-4">
+                        <!-- Cartes bancaires -->
+                        <div class="option-card" data-method="card" onclick="selectPayment('card')">
+                            <div class="payment-icon">
+                                <i class="far fa-credit-card"></i>
+                            </div>
+                            <h5>Carte bancaire</h5>
+                            <p class="text-muted small">Visa, Mastercard, Amex</p>
+                        </div>
+
+                        <!-- PayPal -->
+                        <div class="option-card" data-method="paypal" onclick="selectPayment('paypal')">
+                            <div class="payment-icon">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <h5>PayPal</h5>
+                            <p class="text-muted small">Paiement international</p>
+                        </div>
+
+                        <!-- Virement -->
+                        <div class="option-card" data-method="transfer" onclick="selectPayment('transfer')">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <h5>Virement bancaire</h5>
+                            <p class="text-muted small">Banque à banque</p>
+                        </div>
+
+                        <!-- M-Pesa -->
+                        <div class="option-card" data-method="mpesa" onclick="selectPayment('mpesa')">
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h5>M-Pesa</h5>
+                            <p class="text-muted small">Paiement mobile</p>
+                        </div>
+
+                        <!-- Orange Money -->
+                        <div class="option-card" data-method="orange" onclick="selectPayment('orange')">
+                            <div class="payment-icon">
+                                <i class="fas fa-sim-card"></i>
+                            </div>
+                            <h5>Orange Money</h5>
+                            <p class="text-muted small">Paiement mobile</p>
+                        </div>
+
+                        <!-- Africell -->
+                        <div class="option-card" data-method="africell" onclick="selectPayment('africell')">
+                            <div class="payment-icon">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <h5>Africell Money</h5>
+                            <p class="text-muted small">Paiement mobile</p>
+                        </div>
+                    </div>
+
+                    <!-- Détails carte bancaire -->
+                    <div id="cardDetails" class="mt-4" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="cardNumber"
+                                        placeholder="1234 5678 9012 3456" maxlength="19">
+                                    <label for="cardNumber">
+                                        <i class="far fa-credit-card me-2"></i>
+                                        Numéro de carte
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA">
+                                    <label for="cardExpiry">Date d'expiration</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="cardCVV" placeholder="123" maxlength="4">
+                                    <label for="cardCVV">CVV</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions mobile money -->
+                    <div id="mobileMoneyDetails" class="mobile-money-details" style="display: none;">
+                        <h5 class="mb-3" id="mobileMoneyTitle">Instructions de paiement</h5>
+                        <div class="instruction-box">
+                            <div class="instruction-step">
+                                <div class="step-number-circle">1</div>
+                                <div>
+                                    <strong>Ouvrez l'application</strong> de votre opérateur mobile (M-Pesa, Orange Money, Africell Money)
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number-circle">2</div>
+                                <div>
+                                    <strong>Accédez</strong> à la section "Paiement" ou "Transfert d'argent"
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number-circle">3</div>
+                                <div>
+                                    <strong>Entrez le numéro:</strong> <span id="paymentNumber" class="fw-bold">+243 XX XXX XXXX</span>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number-circle">4</div>
+                                <div>
+                                    <strong>Montant à payer:</strong> <span id="paymentAmount" class="fw-bold text-primary">0 €</span>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number-circle">5</div>
+                                <div>
+                                    <strong>Référence:</strong> <span id="paymentReference" class="fw-bold">BOSOLO-TV</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QR Code pour paiement rapide -->
+                        <div class="qr-code-container">
+                            <h6>Scanner pour payer rapidement</h6>
+                            <div class="qr-placeholder">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <p class="text-muted small">Scannez ce code QR avec votre application mobile money</p>
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Une fois le paiement effectué, cliquez sur "Payer maintenant" pour confirmer
+                        </div>
+                    </div>
+
+                    <!-- Résumé -->
+                    <div class="summary-card">
+                        <h5 class="mb-3">Résumé du rendez-vous</h5>
+                        <div class="summary-item">
+                            <span>Type:</span>
+                            <span id="summaryType" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Date:</span>
+                            <span id="summaryDate" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Horaire:</span>
+                            <span id="summaryTime" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Durée:</span>
+                            <span id="summaryDuration" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Client:</span>
+                            <span id="summaryClient" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Mode de paiement:</span>
+                            <span id="summaryPaymentMethod" class="fw-medium">-</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total à payer:</span>
+                            <span id="summaryTotal" class="text-primary fw-bold">0 €</span>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-outline-primary" onclick="prevStep()">
+                            <i class="fas fa-arrow-left me-2"></i> Retour
+                        </button>
+                        <button class="btn btn-primary" onclick="processPayment()" id="payButton">
+                            Payer maintenant <i class="fas fa-lock ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Étape 4: Confirmation -->
+                <div class="form-section" id="step4Content">
+                    <div class="text-center py-4">
+                        <div class="confirmation-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+
+                        <h3 class="mb-3">Rendez-vous confirmé !</h3>
+                        <div class="reference-badge" id="confirmationRef">-</div>
+
+                        <p class="text-muted mb-4">
+                            Un email de confirmation a été envoyé à <strong id="confirmationEmail">-</strong>
+                        </p>
+
+                        <div class="summary-card text-start">
+                            <h5 class="mb-3">Détails du rendez-vous</h5>
+                            <div class="summary-item">
+                                <span>Nom complet:</span>
+                                <span id="confirmationClientName" class="fw-medium">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Date & Heure:</span>
+                                <span id="confirmationDateTime" class="fw-medium">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Type:</span>
+                                <span id="confirmationType" class="fw-medium">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Durée:</span>
+                                <span id="confirmationDuration" class="fw-medium">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Mode de paiement:</span>
+                                <span id="confirmationPaymentMethod" class="fw-medium">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Lieu:</span>
+                                <span class="fw-medium">Studio Bosolo TV - Kinshasa</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex flex-wrap justify-content-center gap-3">
+                            <button class="btn btn-primary" onclick="printConfirmation()">
+                                <i class="fas fa-print me-2"></i> Imprimer
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="newAppointment()">
+                                <i class="fas fa-plus me-2"></i> Nouveau rendez-vous
+                            </button>
+                            <button class="btn btn-success" onclick="goToHome()">
+                                <i class="fas fa-home me-2"></i> Accueil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variables globales
+        let currentStep = 1;
+        let appointmentData = {
+            type: '',
+            date: '',
+            time: '',
+            duration: '60',
+            client: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: ''
+            },
+            payment: {
+                method: '',
+                amount: 0,
+                mobileProvider: ''
+            },
+            reference: ''
+        };
+
+        const prices = {
+            consultation: 150,
+            interview: 200,
+            promotion: 250,
+            technical: 100,
+            other: 150
+        };
+
+        // Numéros de paiement par opérateur
+        const paymentNumbers = {
+            mpesa: '+243 97 000 0000',
+            orange: '+243 89 000 0000',
+            africell: '+243 82 000 0000'
+        };
+
+        // Noms des méthodes de paiement
+        const paymentMethodNames = {
+            card: 'Carte bancaire',
+            paypal: 'PayPal',
+            transfer: 'Virement bancaire',
+            mpesa: 'M-Pesa',
+            orange: 'Orange Money',
+            africell: 'Africell Money'
+        };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function () {
+            generateDates();
+            generateTimes();
+            updateSummary();
+            initTheme();
+            initCardFormatting();
+        });
+
+        // Thème sombre/clair
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle-btn i');
+            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Formatage carte bancaire
+        function initCardFormatting() {
+            const cardNumberInput = document.getElementById('cardNumber');
+            const cardExpiryInput = document.getElementById('cardExpiry');
+            
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+                    e.target.value = formatted.substring(0, 19);
+                });
+            }
+            
+            if (cardExpiryInput) {
+                cardExpiryInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^0-9]/g, '');
+                    if (value.length >= 2) {
+                        e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                });
+            }
+        }
+
+        // Générer dates
+        function generateDates() {
+            const datesGrid = document.getElementById('datesGrid');
+            datesGrid.innerHTML = '';
+
+            const today = new Date();
+            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+            for (let i = 1; i <= 7; i++) {
+                const date = new Date();
+                date.setDate(today.getDate() + i);
+
+                const dateOption = document.createElement('div');
+                dateOption.className = 'option-card date-option';
+                dateOption.innerHTML = `
+                    <div class="fw-bold fs-5">${date.getDate()}</div>
+                    <div class="text-muted small">${months[date.getMonth()]}</div>
+                    <div class="small">${days[date.getDay()]}</div>
+                `;
+
+                dateOption.addEventListener('click', function () {
+                    document.querySelectorAll('.date-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+
+                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    appointmentData.date = formattedDate;
+                    updateSummary();
+                });
+
+                datesGrid.appendChild(dateOption);
+            }
+        }
+
+        // Générer horaires
+        function generateTimes() {
+            const timesGrid = document.getElementById('timesGrid');
+            timesGrid.innerHTML = '';
+
+            const startHour = 9;
+            const endHour = 18;
+
+            for (let hour = startHour; hour < endHour; hour++) {
+                for (let minute of ['00', '30']) {
+                    const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                    const timeOption = document.createElement('div');
+                    timeOption.className = 'option-card time-option';
+                    timeOption.textContent = time;
+
+                    timeOption.addEventListener('click', function () {
+                        document.querySelectorAll('.time-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        appointmentData.time = time;
+                        updateSummary();
+                    });
+
+                    timesGrid.appendChild(timeOption);
+                }
+            }
+        }
+
+        // Navigation
+        function nextStep() {
+            if (!validateCurrentStep()) return;
+            
+            document.getElementById(`step${currentStep}`).classList.add('completed');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            updateStepContent();
+            updateSummary();
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.remove('completed');
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateStepContent();
+            }
+        }
+
+        function updateStepContent() {
+            for (let i = 1; i <= 4; i++) {
+                const content = document.getElementById(`step${i}Content`);
+                content.classList.toggle('active', i === currentStep);
+            }
+        }
+
+        // Validation
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    if (!appointmentData.type) {
+                        showMessage('Veuillez sélectionner un type de rendez-vous', 'error');
+                        return false;
+                    }
+                    if (!appointmentData.date) {
+                        showMessage('Veuillez sélectionner une date', 'error');
+                        return false;
+                    }
+                    return true;
+
+                case 2:
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+
+                    if (!firstName || !lastName) {
+                        showMessage('Veuillez saisir votre nom complet', 'error');
+                        return false;
+                    }
+
+                    if (!email || !validateEmail(email)) {
+                        showMessage('Veuillez saisir un email valide', 'error');
+                        return false;
+                    }
+
+                    if (!phone) {
+                        showMessage('Veuillez saisir votre numéro de téléphone', 'error');
+                        return false;
+                    }
+
+                    appointmentData.client = { firstName, lastName, email, phone };
+
+                    if (!appointmentData.time) {
+                        showMessage('Veuillez sélectionner un horaire', 'error');
+                        return false;
+                    }
+
+                    return true;
+
+                case 3:
+                    if (!appointmentData.payment.method) {
+                        showMessage('Veuillez sélectionner une méthode de paiement', 'error');
+                        return false;
+                    }
+
+                    if (appointmentData.payment.method === 'card') {
+                        const cardNumber = document.getElementById('cardNumber').value;
+                        const cardExpiry = document.getElementById('cardExpiry').value;
+                        const cardCVV = document.getElementById('cardCVV').value;
+
+                        if (!cardNumber || !cardExpiry || !cardCVV) {
+                            showMessage('Veuillez compléter les informations de carte', 'error');
+                            return false;
+                        }
+                    }
+
+                    return true;
+
+                default:
+                    return true;
+            }
+        }
+
+        // Gestion des événements
+        document.getElementById('appointmentType').addEventListener('change', function () {
+            appointmentData.type = this.value;
+            updateSummary();
+        });
+
+        document.getElementById('duration').addEventListener('change', function () {
+            appointmentData.duration = this.value;
+            updateSummary();
+        });
+
+        // Sélection de paiement
+        function selectPayment(method) {
+            appointmentData.payment.method = method;
+            
+            // Pour mobile money, sauvegarder le fournisseur
+            if (['mpesa', 'orange', 'africell'].includes(method)) {
+                appointmentData.payment.mobileProvider = method;
+            }
+
+            // Désélectionner toutes les cartes
+            document.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Sélectionner la carte cliquée
+            event.currentTarget.classList.add('selected');
+
+            // Afficher/masquer les détails appropriés
+            const cardDetails = document.getElementById('cardDetails');
+            const mobileMoneyDetails = document.getElementById('mobileMoneyDetails');
+            
+            if (method === 'card') {
+                cardDetails.style.display = 'block';
+                mobileMoneyDetails.style.display = 'none';
+            } else if (['mpesa', 'orange', 'africell'].includes(method)) {
+                cardDetails.style.display = 'none';
+                mobileMoneyDetails.style.display = 'block';
+                
+                // Mettre à jour les détails mobile money
+                updateMobileMoneyDetails(method);
+            } else {
+                cardDetails.style.display = 'none';
+                mobileMoneyDetails.style.display = 'none';
+            }
+
+            updateSummary();
+        }
+
+        // Mettre à jour les détails mobile money
+        function updateMobileMoneyDetails(method) {
+            const title = document.getElementById('mobileMoneyTitle');
+            const number = document.getElementById('paymentNumber');
+            const amount = document.getElementById('paymentAmount');
+            const reference = document.getElementById('paymentReference');
+            
+            const providerNames = {
+                mpesa: 'M-Pesa',
+                orange: 'Orange Money',
+                africell: 'Africell Money'
+            };
+            
+            title.textContent = `Instructions de paiement ${providerNames[method]}`;
+            number.textContent = paymentNumbers[method];
+            amount.textContent = appointmentData.payment.amount + ' €';
+            reference.textContent = 'BOSOLO-TV-' + Date.now().toString().slice(-6);
+        }
+
+        // Résumé
+        function updateSummary() {
+            const typeNames = {
+                consultation: 'Consultation',
+                interview: 'Interview',
+                promotion: 'Promotion',
+                technical: 'Support technique',
+                other: 'Autre'
+            };
+
+            document.getElementById('summaryType').textContent = 
+                appointmentData.type ? typeNames[appointmentData.type] : '-';
+            document.getElementById('summaryDate').textContent = appointmentData.date || '-';
+            document.getElementById('summaryTime').textContent = appointmentData.time || '-';
+            document.getElementById('summaryDuration').textContent = 
+                appointmentData.duration ? `${appointmentData.duration} min` : '-';
+            
+            const client = appointmentData.client;
+            document.getElementById('summaryClient').textContent = 
+                client.firstName ? `${client.firstName} ${client.lastName}` : '-';
+
+            document.getElementById('summaryPaymentMethod').textContent = 
+                appointmentData.payment.method ? paymentMethodNames[appointmentData.payment.method] : '-';
+
+            const price = appointmentData.type ? prices[appointmentData.type] || 0 : 0;
+            appointmentData.payment.amount = price;
+            document.getElementById('summaryTotal').textContent = `${price} €`;
+            
+            // Mettre à jour le montant dans mobile money
+            document.getElementById('paymentAmount').textContent = `${price} €`;
+        }
+
+        // Traitement du paiement
+        function processPayment() {
+            if (!validateCurrentStep()) return;
+
+            const payButton = document.getElementById('payButton');
+            const originalText = payButton.innerHTML;
+            payButton.innerHTML = '<span class="loader"></span> Traitement en cours...';
+            payButton.disabled = true;
+
+            // Simulation de délai de traitement
+            setTimeout(() => {
+                appointmentData.reference = 'BOSOLO-' + Date.now().toString().slice(-8);
+                
+                document.getElementById(`step${currentStep}`).classList.add('completed');
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                
+                currentStep = 4;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateStepContent();
+
+                // Remplir les détails de confirmation
+                document.getElementById('confirmationRef').textContent = appointmentData.reference;
+                document.getElementById('confirmationDateTime').textContent = 
+                    `${appointmentData.date} à ${appointmentData.time}`;
+                document.getElementById('confirmationType').textContent = 
+                    document.getElementById('summaryType').textContent;
+                document.getElementById('confirmationDuration').textContent = 
+                    `${appointmentData.duration} minutes`;
+                document.getElementById('confirmationClientName').textContent = 
+                    `${appointmentData.client.firstName} ${appointmentData.client.lastName}`;
+                document.getElementById('confirmationEmail').textContent = appointmentData.client.email;
+                document.getElementById('confirmationPaymentMethod').textContent = 
+                    paymentMethodNames[appointmentData.payment.method];
+
+                showMessage('Paiement traité avec succès !', 'success');
+                sendConfirmationEmail();
+
+                payButton.innerHTML = originalText;
+                payButton.disabled = false;
+            }, 2000);
+        }
+
+        // Email de confirmation
+        function sendConfirmationEmail() {
+            console.log('Email envoyé à:', appointmentData.client.email);
+            console.log('Détails:', {
+                reference: appointmentData.reference,
+                montant: appointmentData.payment.amount,
+                méthode: appointmentData.payment.method
+            });
+        }
+
+        // Utilitaires
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showMessage(text, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} 
+                    ${type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : 'text-primary'}"></i>
+                <div>${text}</div>
+            `;
+
+            container.appendChild(message);
+
+            setTimeout(() => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 300);
+            }, 5000);
+        }
+
+        // Actions
+        function printConfirmation() {
+            window.print();
+        }
+
+        function newAppointment() {
+            appointmentData = {
+                type: '',
+                date: '',
+                time: '',
+                duration: '60',
+                client: { firstName: '', lastName: '', email: '', phone: '' },
+                payment: { method: '', amount: 0, mobileProvider: '' },
+                reference: ''
+            };
+
+            // Réinitialiser le formulaire
+            document.getElementById('appointmentType').value = '';
+            document.getElementById('duration').value = '60';
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('cardExpiry').value = '';
+            document.getElementById('cardCVV').value = '';
+
+            // Désélectionner toutes les options
+            document.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Masquer les détails
+            document.getElementById('cardDetails').style.display = 'none';
+            document.getElementById('mobileMoneyDetails').style.display = 'none';
+
+            // Réinitialiser les étapes
+            currentStep = 1;
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index === 0) step.classList.add('active');
+            });
+            
+            updateStepContent();
+            updateSummary();
+            showMessage('Prêt pour un nouveau rendez-vous !');
+        }
+
+        function goToHome() {
+            showMessage('Redirection vers l\'accueil...', 'success');
+            setTimeout(() => {
+                // window.location.href = 'index.html';
+                console.log('Redirection vers l\'accueil');
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
